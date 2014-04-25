@@ -1,0 +1,15 @@
+|- let rec [X.&{add:?Int.X,sum:!Int.X,done:end!}]
+           f (sum:Int) c = case c of { add c => let (x, c) = receive c in
+                                                f x c;
+                                       sum c => let c = send sum c in
+                                                f sum c;
+                                       done c => c } in
+   let d = fork c: nu X. &{add:?Int.X,sum:!Int.X,done:end!} => f 0 c in
+   let d = select add d in
+   let d = send 4 d in
+   let d = select add d in
+   let d = send 8 d in
+   let d = select sum d in
+   let (sum, d) = receive d in
+   let d = select done d in
+   sum : Int.

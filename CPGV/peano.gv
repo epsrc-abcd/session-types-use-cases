@@ -1,0 +1,24 @@
+-- Zero
+
+|- fork x : mu X.+{zero:end!,succ:X} => select zero x : nu X.&{zero:end?,succ:X}.
+
+-- Inc (term)
+
+y: nu X.&{zero:end?, succ:X} |- fork x : mu X.+{zero:end!,succ:X} => link (select succ x) y : nu X.&{zero:end?,succ:X}.
+
+-- Add
+
+|- let rec [X.&{zero:end?,succ:X}]
+       add (z:mu X.+{zero:end!, succ:X}) (y:nu X.&{zero:end?, succ:X}) x = case x of {
+         zero x => link z y;
+         succ x => add z (fork yy : mu X.+{zero:end!,succ:X} => link (select succ yy) y) x } in
+   let zero = fork x : mu X.+{zero:end!,succ:X} => select zero x in
+   let one  = let zero = fork x : mu X.+{zero:end!,succ:X} => select zero x in
+              fork x : mu X.+{zero:end!,succ:X} => link (select succ x) zero in
+   fork z : mu X.+{zero:end!, succ:X} => add z zero one : nu X.&{zero:end?,succ:X}.
+
+--
+--y: nu X.&{zero:end?, succ:X}, z: nu X.&{zero:end?, succ:X} |-
+--  case y of {
+--    zero y => fork x : mu X.+{zero:end!,succ:X} => link x z;
+--    succ y => fork x : mu X.+{zero:end!,succ:X} =>
