@@ -1,0 +1,35 @@
+package demos.file_example;
+
+class FileFactory typestate FactoryProtocol {
+	private File aFile;
+
+	// demonstrates the return typestate of
+	// a method. It returns a typestate field.
+
+	File new_File() {
+		aFile = new File("file.txt");
+		return aFile;
+	}
+
+	void method() {
+		File myFile = new_File();
+		switch(myFile.open().getEnum()) {
+			case Status.OK:
+				loop:
+				while(true) {
+					switch(myFile.hasNext().getEnum()) {
+						case BooleanEnum.TRUE:
+							myFile.read();
+							break;
+						case BooleanEnum.FALSE:
+							break loop;
+					}
+				}
+				myFile.close();
+				break;
+			case Status.ERROR:
+				System.out.println("file not found!");
+				break;
+		}
+	}
+}

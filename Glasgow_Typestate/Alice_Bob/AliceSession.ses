@@ -1,0 +1,5 @@
+package protocol;
+typestate AliceSession {
+	session
+		Init = {void sendStringToBob(String) : {}}
+}

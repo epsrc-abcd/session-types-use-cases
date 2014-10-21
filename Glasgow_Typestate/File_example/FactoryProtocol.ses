@@ -1,0 +1,29 @@
+package demos.file_example;
+typestate FactoryProtocol {
+
+	session
+		Init =		{
+					File	<NewFile>	new_File() : end//{ foo : end}
+				}
+
+	where
+
+		NewFile =	{
+					Status open(): <OK: Open, ERROR: end>
+				}
+
+		Open =		{
+					BooleanEnum hasNext(): <TRUE: Read, FALSE: Close>,
+					void close(): end
+				}
+
+		Read =		{
+					void read(): Open
+				}
+
+		Close =		{
+					void close(): end 
+				}
+
+
+}

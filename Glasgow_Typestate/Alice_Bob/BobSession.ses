@@ -1,0 +1,5 @@
+package protocol;
+typestate BobSession {
+	session
+		Init = {String receiveStringFromAlice() : {}}
+}

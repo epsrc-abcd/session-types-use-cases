@@ -1,0 +1,5 @@
+package protocol;
+typestate ProtocolSession {
+	session
+		Init	=	{ void AliceSaysHi(): { void BobReceivesGreet(): end } }
+}

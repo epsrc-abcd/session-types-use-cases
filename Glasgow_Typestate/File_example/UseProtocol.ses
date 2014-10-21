@@ -1,0 +1,10 @@
+package demos.file_example;
+
+typestate UseProtocol {
+	session
+			Init =	{
+					void aMethod():	{
+								void bMethod() : Init
+							}
+				}
+}
