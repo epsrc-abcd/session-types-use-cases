@@ -1,0 +1,27 @@
+// Link to the initial diagrams: https://confluence.oceanobservatories.org/display/CIDev/Resource+Control+in+Scribble
+
+module IC_Scribble.ResourceControl;
+
+type <java> "java.lang.Integer" from "rt.jar" as int;
+
+global protocol ResourceControl(role U, role C, role A) {
+	req(int) from U to C;
+	start() from C to A;
+	interruptible OUTER {
+		rec X {
+			interruptible INNER {
+				rec Y {
+					data() from A to U;
+					continue Y;
+				}
+			} with {
+				pause() by U;
+			}
+			resume() from U to A;
+			continue X;
+		}
+	} with {
+		stop() by U;
+		timeout() by C;
+	}
+}
