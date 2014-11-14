@@ -36,9 +36,8 @@ sig <java> "test2.runtime.net.smtp.message.Quit"
 		from "test2/runtime/net/smtp/message/Quit.java" as quit;
 
 global protocol SMTP(role S, role C)
-{   
-    // 5 minutes timeout
-	220 from S to C [xs<5];
+{
+	220 from S to C;
 	do Ehlo(S, C);
 }
 
@@ -139,7 +138,7 @@ global protocol Mail(role S, role C)
 	{
 		choice at C
 		{
-			mail from C to S [xs<=5]; //mail from:<a@b.com>
+			mail from C to S; //mail from:<a@b.com>
 			choice at S
 			{
 				501 from S to C;
@@ -153,7 +152,7 @@ global protocol Mail(role S, role C)
 				{
 					choice at C
 					{
-						rcpt from C to S [xs<5]; //rcpt to:<c@d.com>
+						rcpt from C to S; //rcpt to:<c@d.com>
 						choice at S
 						{
 							250 from S to C;
@@ -163,7 +162,7 @@ global protocol Mail(role S, role C)
 					or
 					{
 						data from C to S;
-						354 from S to C [xs<2];
+						354 from S to C;
 						//too from C to S; //to:<you>
 						//froom from C to S; //from:<me>
 						rec Z3
