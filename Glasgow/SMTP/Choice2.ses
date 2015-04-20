@@ -1,0 +1,4 @@
+package FinalSMTP;
+enum Choice2 {
+	_250DASH, _250;
+}

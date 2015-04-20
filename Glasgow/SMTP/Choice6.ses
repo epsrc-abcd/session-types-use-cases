@@ -1,0 +1,4 @@
+package FinalSMTP;
+enum Choice6 {
+	MAIL, QUIT;
+}

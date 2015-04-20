@@ -1,0 +1,4 @@
+package FinalSMTP;
+enum Choice4 {
+	AUTH, QUIT;
+}

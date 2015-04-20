@@ -1,0 +1,4 @@
+package FinalSMTP;
+enum Choice1 {
+	EHLO, QUIT;
+}

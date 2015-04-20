@@ -1,0 +1,4 @@
+package FinalSMTP;
+enum Choice8 {
+	RCPT, DATA;
+}

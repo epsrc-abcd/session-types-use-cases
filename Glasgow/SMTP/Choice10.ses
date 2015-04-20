@@ -1,0 +1,4 @@
+package FinalSMTP;
+enum Choice10 {
+	DATALINE, SUBJECT, ATAD;
+}
