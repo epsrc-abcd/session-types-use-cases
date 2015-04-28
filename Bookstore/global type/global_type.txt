@@ -1,0 +1,34 @@
+Global Type:
+
+Bookstore =	Buyer1 → Seller : {book(title)}.
+		Seller → Buyer1 : {book(price)}.
+		Buyer1 → Buyer2 : {quote(contribution)}.
+		Buyer2 → Buyer1, Seller : {
+			agree() : Buyer1 → Seller : {transfer(money)}. Buyer2 → Seller : {transfer(money)}.end,
+			quit() :end
+		}
+
+
+Local Types:
+
+Buyer1 =	[Seller]!{book(title)};
+		[Seller]?{book(price)};
+		[Buyer2]!{quote(contribution)};
+		[Buyer2]?{
+			agree() : [Seller]!{transfer(money)}; end,
+			quit() : end
+		}
+
+Seller =	[Buyer1]?{book(title)};
+		[Buyer1]!{book(price)};
+		[Buyer2]?{
+			agree() : [Buyer1]?{transfer(money)}; [Buyer2]?{transfer(money)}; end,
+			quit() : end
+		}
+
+Buyer2 =	[Buyer1]?{quote(contribution)};
+		[Buyer1, Seller]!{
+			agree() : [Seller]!{transfer(money)}; end,
+			quit() : end
+		}
+

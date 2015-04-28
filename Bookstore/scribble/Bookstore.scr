@@ -1,0 +1,14 @@
+global protocol Bookstore(role Buyer1, role Buyer2, role Seller) {
+	book(title) from Buyer1 to Seller;
+	book(price) from Seller to Buyer1;
+	quote(contribution) from Buyer1 to Buyer2;
+
+	choice at Buyer2 {
+		agree() fom Buyer2 to Buyer1, Seller;
+		transfer(money) from Buyer1 to Seller;
+		transfer(money) from Buyer2 to Seller;
+	}
+	or {
+		quit() from Buyer2 to Buyer1, Seller;
+	}
+}
