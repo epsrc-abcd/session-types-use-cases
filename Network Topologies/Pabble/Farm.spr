@@ -1,0 +1,15 @@
+module default;
+const N = 2..max;
+global protocol Farm(role Worker[1..N]) {
+  Init() from __self to __self;
+  rec Repeat {
+    BeforeLoop() from __self to __self;
+    foreach (i:2..N) {
+      Dispatch(T) from Worker[1] to Worker[i];
+      Collect(T) from Worker[i] to Worker[1];
+    }
+    AfterLoop() from __self to __self;
+    continue Repeat;
+  }
+  Finish() from __self to __self;
+}

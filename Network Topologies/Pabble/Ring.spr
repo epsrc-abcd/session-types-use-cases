@@ -1,0 +1,15 @@
+module default;
+const N = 2..max;
+global protocol Ring(role Worker[1..N]) {
+  Init() from __self to __self;
+  rec Loop {
+    PreRing() from __self to __self;
+    foreach (i:1..N-1) {
+      Process(T) from Worker[i:1..N-1] to Worker[i+1];
+      ProcessN(T) from Worker[N] to Worker[1];
+    }
+    PostRing() from __self to __self;
+    continue Loop;
+  }
+  Finish() from __self to __self;
+}

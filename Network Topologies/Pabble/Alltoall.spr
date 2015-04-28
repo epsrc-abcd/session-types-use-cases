@@ -1,0 +1,10 @@
+module default;
+const N = 2..max;
+global protocol Alltoall(role P[1..N]) {
+  Init() from __self to __self;
+  rec Loop {
+    Data(T) from __All to __All;
+    continue Loop;
+  }
+  Finish() from __self to __self;
+}

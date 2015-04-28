@@ -1,0 +1,15 @@
+module default;
+const N = 2..max;
+global protocol TwoWayMesh(role Worker[1..N][1..N]) {
+  Init() from __self to __self;
+  rec Steps {
+    LoopBegin() from __self to __self;
+    LeftToRight(T) from Worker[r:1..N][c:1..N-1] to Worker[r][c+1];
+    RightToLeft(T) from Worker[r:1..N][c:2..N]   to Worker[r][c-1];
+    UpToDown(T) from Worker[r:1..N-1][c:1..N] to Worker[r+1][c];
+    DownToUp(T) from Worker[r:2..N][c:1..N]   to Worker[r-1][c];
+    LoopEnd() from __self to __self;
+    continue Steps;
+  }
+  Finish() from __self to __self;
+}
