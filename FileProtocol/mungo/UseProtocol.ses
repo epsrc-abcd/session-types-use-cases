@@ -1,0 +1,10 @@
+package mungo;
+
+typestate UseProtocol {
+	session
+			Init =	{
+					void initialiseFile():	{
+								void processFile() : Init
+							}
+				}
+}

@@ -1,0 +1,23 @@
+package mungo;
+typestate FileProtocol {
+
+	session
+		Init =	{
+				Status open(): <OK: Open, ERROR: end>
+			}
+	where
+    
+		Open =	{
+				BooleanEnum hasNext(): <TRUE: Read, FALSE: Close>,
+				void close(): end
+			}
+
+		Read =	{
+				void read(): Open
+			}
+	    
+		Close =	{
+				void close(): end 
+			}
+}
+

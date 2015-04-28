@@ -1,0 +1,4 @@
+package mungo;
+enum Status {
+	OK, ERROR;
+}

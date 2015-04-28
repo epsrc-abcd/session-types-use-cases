@@ -1,0 +1,36 @@
+package mungo;
+
+class UseFile typestate UseProtocol {
+	private File myFile;
+
+	// Demonstrates how a typestate
+	// field is used.
+
+	void initialiseFile() {
+		myFile = new File("text.txt");
+	}
+
+	private void processFile() {
+		switch(myFile.open().getEnum()) {
+			case Status.OK:
+				loop:
+				while(true) {
+					switch(myFile.hasNext().getEnum()) {
+						case BooleanEnum.TRUE:
+							myFile.read();
+							break;
+						case BooleanEnum.FALSE:
+							break loop;
+					}
+				}
+				myFile.close();		
+				break;
+			case Status.ERROR:
+				System.out.println("file not found!");
+				break;
+		}
+
+		//myFile.close();
+
+	}
+}

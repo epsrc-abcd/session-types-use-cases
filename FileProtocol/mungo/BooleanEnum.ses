@@ -1,0 +1,4 @@
+package mungo;
+enum BooleanEnum {
+	TRUE, FALSE;
+}
