@@ -1,0 +1,21 @@
+package CoCoPOPS.solutions.socketSession;
+
+typestate BobProtocol {
+	from
+		Init = {
+			void sendStringToAlice(String): SendChoice
+		}
+
+		SendChoice = {
+			void sendTimeChoiceToAlice(): {
+				int recvTimeFromAlice() : EndProtocol
+			},
+			void sendGreetingChoiceToAlice(): {
+				String recvGreetingFromAlice() : EndProtocol
+			}
+		}
+
+		EndProtocol = {
+			void endCommunication() : {}
+		}
+}

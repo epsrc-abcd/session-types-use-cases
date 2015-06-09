@@ -1,0 +1,16 @@
+package CoCoPOPS.demo.collection;
+
+typestate StackUser2Protocol {
+	from
+		Init = {
+			void produce(int) : Consume,
+			void produce() : Consume,
+			void close() : end
+		}
+
+		Consume = {
+			void produce(int) : Consume,
+			void produce() : Consume,
+			void consume() : Init
+		}
+}

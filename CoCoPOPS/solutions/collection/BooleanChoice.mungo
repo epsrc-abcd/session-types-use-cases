@@ -1,0 +1,5 @@
+package CoCoPOPS.solutions.collection;
+
+enum BooleanChoice {
+	TRUE, FALSE;
+}

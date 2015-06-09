@@ -1,0 +1,26 @@
+package CoCoPOPS.demo.socketSession;
+
+typestate AliceProtocol {
+	from
+		Init = {
+			void connect(): {
+				String recvStringFromBob(): ReceiveChoice 
+			}
+		}
+
+		ReceiveChoice = {
+			BobChoice choiceFromBob() : <TIME: SendTime, GREET: HowAreYou>
+		}
+
+		SendTime = {
+			void sendTimeToBob(int) : EndProtocol
+		}
+
+		HowAreYou = {
+			void sendGreetToBob(String) : EndProtocol
+		}
+
+		EndProtocol = {
+			void endCommunication() : end
+		}
+}

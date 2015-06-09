@@ -1,0 +1,59 @@
+package CoCoPOPS.solutions.collection;
+
+public class Stack typestate CollectionProtocol {
+	private Info head;
+
+	public Stack() {
+	}
+
+	public void initialise() {
+		head = null;
+	}
+
+	public void put(Info i) {
+		if(head == null)
+			head = i;
+		else
+			head = head.next(i);
+	}
+
+	public Info get() {
+		Info tmp = head;
+		head = head.next();
+		return tmp;
+	}
+
+	public BooleanChoice isEmpty() {
+		if(head == null)
+			return new BooleanChoice(BooleanChoice.TRUE);
+
+		return new BooleanChoice(BooleanChoice.FALSE);
+	}
+
+	public void close() {
+	}
+
+	public static void  main(String []args) {
+		Stack s = new Stack();
+
+		s.initialise();
+
+		s.put(new Info(0));
+		for(int i =1; i < 64; i++)
+			s.put(new Info(i));
+
+		loop: do {
+			System.out.println(s.get().get());
+
+			switch(s.isEmpty().getEnum()) {
+				case BooleanChoice.TRUE:
+					break loop;
+
+				case BooleanChoice.FALSE:
+					continue loop;
+			}
+		} while(true);
+
+		s.close();
+	}
+}

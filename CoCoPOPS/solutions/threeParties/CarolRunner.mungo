@@ -1,0 +1,30 @@
+package CoCoPOPS.solutions.threeParties;
+
+class CarolRunner implements Runnable {
+	private int port;
+	CarolRunner(int port) {
+		this.port = port;
+	}
+
+	public void run() {
+		try {
+			Thread.sleep(100);
+		}
+		catch(java.lang.InterruptedException e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
+		Friend carol = new Friend(port);
+		System.out.println("Carol received from Bob: " + carol.recvHelloFromBob());
+		switch(carol.recvChoiceFromBob().getEnum()) {
+			case BobChoice.TIME:
+				System.out.println("Carol received from Bob: What is the time?");
+				carol.sendTimeToBob(1900);
+				break;
+
+			case BobChoice.END:
+				break;
+		}
+		carol.endCommunication();
+	}
+}

@@ -1,0 +1,37 @@
+package CoCoPOPS.solutions.threeParties;
+
+import java.net.Socket;
+import java.io.IOException;
+
+class Friend typestate FriendProtocol {
+	private SessionSocket bob;
+	public Friend(int port) {
+		try {
+			bob = new SessionSocket(new Socket("localhost", port));
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
+	}
+
+	String recvHelloFromBob() {
+		return bob.recvString();
+	}
+
+	void sendTimeToBob(int i) {
+		bob.send(i);
+	}
+
+	BobChoice recvChoiceFromBob() {
+		return (BobChoice) bob.recvObject();
+	}
+
+//	void sendGreetToBob(String s) {
+//		bob.send(s);
+//	}
+
+	void endCommunication() {
+		bob.close();
+	}
+}

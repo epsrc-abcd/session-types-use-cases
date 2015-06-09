@@ -1,0 +1,50 @@
+package CoCoPOPS.demo.collection;
+
+class StackUser2 typestate StackUser2Protocol {
+	private Stack s;
+
+	StackUser2() {
+		s = new Stack();
+		s.initialise(0);
+	}
+
+	void produce() {
+		s.put(new Node(0));
+		s.put(new Node(1));
+	}
+
+	void produce(int j) {
+		int i = 0;
+		do {
+			s.put(new Node(i++));
+		} while(i < j);
+	}
+
+	void consume() {
+		loop: do {
+			System.out.println(s.get().get() + " ");
+
+			switch(s.isEmpty().getEnum()) {
+				case BooleanChoice.TRUE:
+					break loop;
+
+				case BooleanChoice.FALSE:
+					continue loop;
+			}
+		} while(true);
+	}
+
+	void close() {
+		s.close();
+	}
+
+	public static void main(String []args) {
+		StackUser2 su = new StackUser2();
+		su.produce(20);
+		su.consume();
+		su.produce();
+		su.produce();
+		su.consume();
+		su.close();
+	}
+}

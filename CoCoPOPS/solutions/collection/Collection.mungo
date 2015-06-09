@@ -1,0 +1,58 @@
+package CoCoPOPS.solutions.collection;
+
+class Collection typestate CollectionProtocol {
+	private Info [] array;
+	private int index;
+	private int size;
+
+	public Collection() {
+	}
+
+	void initialise(int i) {
+		size = i;
+		array = new Info[size];
+		index = 0;
+	}
+
+	void put(Info i) {
+		array[index++] = i;
+	}
+
+	Info get() {
+		return array[--index];
+	}
+
+	BooleanChoice isEmpty() {
+		if(index == 0)
+			return new BooleanChoice(BooleanChoice.TRUE);
+
+		return new BooleanChoice(BooleanChoice.FALSE);
+	}
+
+	void close() {
+	}
+
+	public static void  main(String []args) {
+		Collection c = new Collection();
+
+		c.initialise(64);
+
+		c.put(new Info(0));
+		for(int i =1; i < 64; i++)
+			c.put(new Info(i));
+
+		loop: do {
+			System.out.println(c.get().get());
+
+			switch(c.isEmpty().getEnum()) {
+				case BooleanChoice.TRUE:
+					break loop;
+
+				case BooleanChoice.FALSE:
+					continue loop;
+			}
+		} while(true);
+
+		c.close();
+	}
+}

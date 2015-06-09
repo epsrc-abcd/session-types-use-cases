@@ -1,0 +1,53 @@
+package CoCoPOPS.solutions.threeParties;
+
+import java.net.ServerSocket;
+import java.io.IOException;
+
+class Bob typestate BobProtocol {
+	private SessionSocket alice;
+	private SessionSocket carol;
+
+	public Bob(int alicePort, int carolPort) {
+		try {
+			ServerSocket listener = new ServerSocket(alicePort);
+			alice = new SessionSocket(listener.accept());
+			listener = new ServerSocket(carolPort);
+			carol = new SessionSocket(listener.accept());
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
+	}
+
+	void sendHelloToAlice(String s) {
+		alice.send(s);
+	}
+
+	void sendHelloToCarol(String s) {
+		carol.send(s);
+	}
+
+	void sendTimeChoiceToAlice() {
+		alice.send(new BobChoice(BobChoice.TIME));
+		carol.send(new BobChoice(BobChoice.END));
+	}
+
+	void sendTimeChoiceToCarol() {
+		carol.send(new BobChoice(BobChoice.TIME));
+		alice.send(new BobChoice(BobChoice.END));
+	}
+
+	int recvTimeFromAlice() {
+		return alice.recvInt();
+	}
+
+	int recvTimeFromCarol() {
+		return carol.recvInt();
+	}
+
+	void endCommunication() {
+		alice.close();
+		carol.close();
+	}
+}

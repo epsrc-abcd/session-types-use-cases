@@ -1,0 +1,20 @@
+package CoCoPOPS.solutions.threeParties;
+
+typestate FriendProtocol {
+	from
+		Init = {
+			String recvHelloFromBob(): ReceiveChoice 
+		}
+
+		ReceiveChoice = {
+			BobChoice recvChoiceFromBob() : <TIME: SendTime, END: EndProtocol>
+		}
+
+		SendTime = {
+			void sendTimeToBob(int) : EndProtocol
+		}
+
+		EndProtocol = {
+			void endCommunication() : end
+		}
+}

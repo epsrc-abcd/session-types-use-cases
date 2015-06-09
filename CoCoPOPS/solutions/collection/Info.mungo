@@ -1,0 +1,28 @@
+package CoCoPOPS.solutions.collection;
+
+public class Info {
+	private int i;
+	private Info next;
+
+	public Info(int i) {
+		this.i = i;
+		next = null;
+	}
+
+	public void set(int i) {
+		this.i = i;
+	}
+
+	public String get() {
+		return "The number of this info is: " + i;
+	}
+
+	public Info next(Info in) {
+		in.next = this;
+		return in;
+	}
+
+	public Info next() {
+		return next;
+	}
+}

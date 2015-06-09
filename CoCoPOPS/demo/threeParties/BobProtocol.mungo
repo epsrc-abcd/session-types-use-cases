@@ -1,0 +1,29 @@
+package CoCoPOPS.demo.threeParties;
+
+typestate BobProtocol {
+	from
+		Connect = {
+			void connect() : GreetAlice
+		}
+
+		GreetAlice = {
+			void sendHelloToAlice(String) : GreetCarol 
+		}
+
+		GreetCarol = {
+			void sendHelloToCarol(String) : MakeChoice
+		}
+
+		MakeChoice = {
+			void sendTimeChoiceToAlice() : {
+				int recvTimeFromAlice() : EndProtocol
+			},
+			void sendTimeChoiceToCarol() : {
+				int recvTimeFromCarol() : EndProtocol
+			}
+		}
+
+		EndProtocol = {
+			void endCommunication() : {}
+		}
+}
