@@ -1,0 +1,20 @@
+A demo that Dimitris presented in the CoCoPOPS event 9/6/2015.
+
+It presents a protocol for a collection data structure.
+The protocol has 4 states:
+- Init: only initialise method can be called to initialise the collection
+- Empty: an empty state cannot allow a get method
+- NonEmpty: an non empty state can allow a get and a put method
+- Unknown: in the unknown state an isEmpty method call decides the next state (Empty or nonEmpty)
+
+The implementation of the collection protocol is done using a stack data structure.
+
+Then two StackUsers demonstrate the basic features of mungo such as:
+- local variable type inference
+- protocol unfolding
+- argument passing
+- return values
+- type field type inference
+
+Note the recursion structures that are implemented using a compination
+of a nested switch inside a labelled do while statement.

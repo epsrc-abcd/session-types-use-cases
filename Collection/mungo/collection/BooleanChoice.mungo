@@ -1,0 +1,5 @@
+package collection;
+
+public enum BooleanChoice {
+	TRUE, FALSE;
+}

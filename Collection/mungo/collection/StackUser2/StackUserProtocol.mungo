@@ -1,0 +1,18 @@
+package collection.StackUser2;
+
+import collection.Stack;
+
+typestate StackUserProtocol {
+	from
+		Init = {
+			void produce(int) : Consume,
+			void produce() : Consume,
+			void close() : end
+		}
+
+		Consume = {
+			void produce(int) : Consume,
+			void produce() : Consume,
+			void consume() : Init
+		}
+}
