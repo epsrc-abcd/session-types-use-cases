@@ -1,4 +1,4 @@
-package CoCoPOPS.demo.socketSession;
+package TwoParties.socketSession;
 
 class AliceRunner implements Runnable {
 	private int port;

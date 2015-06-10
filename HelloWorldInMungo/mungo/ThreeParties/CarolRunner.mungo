@@ -1,4 +1,4 @@
-package CoCoPOPS.demo.threeParties;
+package ThreeParties.threeParties;
 
 class CarolRunner implements Runnable {
 	private int port;

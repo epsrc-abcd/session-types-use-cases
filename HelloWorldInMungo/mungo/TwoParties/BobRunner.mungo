@@ -1,4 +1,4 @@
-package CoCoPOPS.demo.socketSession;
+package TwoParties.socketSession;
 
 class BobRunner implements Runnable {
 	private int port;

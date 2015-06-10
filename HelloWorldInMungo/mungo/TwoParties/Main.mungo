@@ -1,4 +1,4 @@
-package CoCoPOPS.demo.socketSession;
+package TwoParties.socketSession;
 
 class Main {
 	public static void main(String [] args) {

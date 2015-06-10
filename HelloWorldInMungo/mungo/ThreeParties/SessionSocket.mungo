@@ -1,4 +1,4 @@
-package CoCoPOPS.demo.socketSession;
+package ThreeParties.threeParties;
 
 import java.net.ServerSocket;
 import java.net.Socket;

@@ -1,4 +1,4 @@
-package CoCoPOPS.demo.socketSession;
+package TwoParties.socketSession;
 
 typestate AliceProtocol {
 	from

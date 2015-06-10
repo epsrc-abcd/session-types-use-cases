@@ -1,4 +1,4 @@
-package CoCoPOPS.demo.threeParties;
+package ThreeParties.threeParties;
 
 typestate BobProtocol {
 	from
