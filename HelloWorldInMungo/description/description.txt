@@ -1,0 +1,19 @@
+Demonstrates two distributed HelloWorld protocols for mungo
+based on a protocol described in global types/scribble.
+
+
+Two party protocol:
+Bob says hi to Alice and then decides whether he will ask Alice the time or not.
+Alice respond according to the choice of Bob.
+
+Three party protocol:
+Bob says hi to Alice and Carol and then decides who to ask for the time.
+Alice or Carol respond according to the choice of Bob.
+
+Implementation:
+
+All the participants are distributed over java threads and use sockects
+to coordinate.
+
+Demonstrates the robustness of mungo implementation when dealing with
+distributed java resources.
