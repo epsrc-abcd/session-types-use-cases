@@ -1,0 +1,71 @@
+-- GV versions of examples from Propositions as Sessions.
+
+name: Name, cc: CreditCard, c: !Name.!CreditCard.?Receipt.end? |-
+  let c = send name c in
+  let c = send cc c in
+  let (r, c) = receive c in r : Receipt.
+
+compute: Name -> CreditCard -> Receipt, c: ?Name.?CreditCard.!Receipt.end! |-
+  let (name, c) = receive c in
+  let (cc, c) = receive c in
+  send (compute name cc) c : end!.
+
+name: Name, cc: CreditCard, compute: Name -> CreditCard -> Receipt |-
+  let c = fork c:?Name.?CreditCard.!Receipt.end! =>
+            let (name, c) = receive c in
+            let (cc, c) = receive c in
+            send (compute name cc) c in
+  let c = send name c in
+  let c = send cc c in
+  let (r, c) = receive c in r : Receipt.
+
+name: Name, c: !Name.?Price.end? |-
+  let c = send name c in
+  let (p, c) = receive c in p : Price.
+
+lookup: Name -> Price, c: ?Name.!Price.end! |-
+  let (p, c) = receive c in
+  send (lookup p) c : end!.
+
+name: Name, lookup: Name -> Price |-
+  let c = fork c:?Name.!Price.end! =>
+            let (p, c) = receive c in
+            send (lookup p) c in
+  let c = send name c in
+  let (p, c) = receive c in p : Price.
+
+name: Name, lookup: Name -> Price, compute: Name -> CreditCard -> Receipt |-
+  let c = fork c: &{buy:?Name.?CreditCard.!Receipt.end!, shop:?Name.!Price.end!} =>
+            case c of
+              {buy c => let (name, c) = receive c in
+                        let (cc, c) = receive c in
+                        send (compute name cc) c;
+               shop c => let (p, c) = receive c in
+                         send (lookup p) c } in
+  let c = select shop c in
+  let c = send name c in
+  let (p, c) = receive c in p : Price.
+
+name: Name, cc: CreditCard, lookup: Name -> Price, compute: Name -> CreditCard -> Receipt |-
+  let c = fork c: &{buy:?Name.?CreditCard.!Receipt.end!, shop:?Name.!Price.end!} =>
+            case c of {buy c => let (name, c) = receive c in
+                                let (cc, c) = receive c in
+                                send (compute name cc) c;
+                       shop c => let (p, c) = receive c in
+                                 send (lookup p) c } in
+  let c = select buy c in
+  let (r, c) = receive (send cc (send name c)) in r : Receipt.
+
+aname: Name, bname: Name, cc: CreditCard, lookup: Name -> Price, compute: Name -> CreditCard -> Receipt, out:!Price.!Receipt.end! |-
+  let s = serve c: &{buy:?Name.?CreditCard.!Receipt.end!, shop:?Name.!Price.end!} =>
+            case c of
+              {buy c => let (name, c) = receive c in
+                        let (cc, c) = receive c in
+                        send (compute name cc) c;
+               shop c => let (p, c) = receive c in
+                         send (lookup p) c} in
+  send (let c = select buy (request s) in
+        let (p, c) = receive (send cc (send aname c)) in p)
+    (send (let c = select shop (request s) in
+           let (r, c) = receive (send bname c) in r)
+      out) : end!.
