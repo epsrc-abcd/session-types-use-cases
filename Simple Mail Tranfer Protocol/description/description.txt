@@ -1,0 +1,18 @@
+Simple Mail Transfer Protocol:
+- Implementation of a part of the SMTP protocol as described in RFC 5321.
+
+SMTP as a Scribble/Session protocol:
+- The SMTP protocol is a text protocol that uses TCP connection.
+  We show that a text protocol like SMTP can be described in Scribble.
+  The Scribble protocol is used to implement SMTP in Mungo and LICS
+- The implementation requires a layer for translating session messages, which
+  the client format, from/to text messages, which is the server format
+
+Mungo implementation:
+- The Mungo implementation uses the Scribble to Mungo tool to derive
+  local typestate protocols for each participant implemented (in this
+  case the SMTP Client)
+- The Mungo Client is tested against the gmail server
+
+LICS implementation:
+- The LICS implementation implements both the client and the server
