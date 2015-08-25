@@ -1,4 +1,4 @@
-package CoCoPOPS.solutions.threeParties;
+package CoCoPOPS.demo.threeParties;
 
 class AliceRunner implements Runnable {
 	private int port;

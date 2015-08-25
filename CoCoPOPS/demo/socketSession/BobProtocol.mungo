@@ -1,4 +1,4 @@
-package CoCoPOPS.solutions.socketSession;
+package CoCoPOPS.demo.socketSession;
 
 typestate BobProtocol {
 	from

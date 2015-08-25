@@ -1,0 +1,12 @@
+A list of examples that were used to demonstrate
+the Mungo features in the CoCoPoPS
+
+Stack Protocols
+- The Stack Protocols are desinged to demonstrate the most basic 
+  features of Mungo: fields, local variables, argument passing and
+  return values, switch/select, loops etc...
+- The Hello World protocols are designed to show communication using
+  a socket interface. They also demonstrate the usage of Java threads
+  in the context of typestates.
+
+

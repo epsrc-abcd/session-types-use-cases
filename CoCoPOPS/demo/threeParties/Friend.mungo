@@ -1,11 +1,11 @@
-package CoCoPOPS.solutions.socketSession;
+package CoCoPOPS.demo.threeParties;
 
 import java.net.Socket;
 import java.io.IOException;
 
-class Alice typestate AliceProtocol {
+class Friend typestate FriendProtocol {
 	private SessionSocket bob;
-	public Alice(int port) {
+	public Friend(int port) {
 		try {
 			bob = new SessionSocket(new Socket("localhost", port));
 		}
@@ -15,7 +15,7 @@ class Alice typestate AliceProtocol {
 		}
 	}
 
-	String recvStringFromBob() {
+	String recvHelloFromBob() {
 		return bob.recvString();
 	}
 
@@ -23,13 +23,13 @@ class Alice typestate AliceProtocol {
 		bob.send(i);
 	}
 
-	BobChoice choiceFromBob() {
+	BobChoice recvChoiceFromBob() {
 		return (BobChoice) bob.recvObject();
 	}
 
-	void sendGreetToBob(String s) {
-		bob.send(s);
-	}
+//	void sendGreetToBob(String s) {
+//		bob.send(s);
+//	}
 
 	void endCommunication() {
 		bob.close();

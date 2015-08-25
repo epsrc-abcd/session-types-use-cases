@@ -1,55 +1,56 @@
 package CoCoPOPS.demo.collection;
 
 public class Stack typestate CollectionProtocol {
-	private Node head;
-	Stack () {
+	private Info head;
+
+	public Stack() {
 	}
 
-	void initialise(int i) {
+	public void initialise() {
 		head = null;
 	}
 
-	void put(Node n) {
-		head = n.next(head);
+	public void put(Info i) {
+		if(head == null)
+			head = i;
+		else
+			head = head.next(i);
 	}
 
-	Node get() {
-		Node tmp = head;
+	public Info get() {
+		Info tmp = head;
 		head = head.next();
 		return tmp;
 	}
 
-	BooleanChoice isEmpty() {
+	public BooleanChoice isEmpty() {
 		if(head == null)
 			return new BooleanChoice(BooleanChoice.TRUE);
+
 		return new BooleanChoice(BooleanChoice.FALSE);
 	}
 
-	void close() {
+	public void close() {
 	}
 
-	public static void main(String []args) {
+	public static void  main(String []args) {
 		Stack s = new Stack();
-		s.initialise(0);
 
-		s.put(new Node(0));
-		s.put(new Node(1));
+		s.initialise();
 
-		int i = 2;
-
-		do {
-			s.put(new Node(i++));
-		} while(i < 42);
+		s.put(new Info(0));
+		for(int i =1; i < 64; i++)
+			s.put(new Info(i));
 
 		loop: do {
-			Node n = s.get();
-			System.out.println(n.get());
+			System.out.println(s.get().get());
+
 			switch(s.isEmpty().getEnum()) {
 				case BooleanChoice.TRUE:
-				break loop;
-				
+					break loop;
+
 				case BooleanChoice.FALSE:
-				continue loop;
+					continue loop;
 			}
 		} while(true);
 

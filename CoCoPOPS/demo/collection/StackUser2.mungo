@@ -5,18 +5,18 @@ class StackUser2 typestate StackUser2Protocol {
 
 	StackUser2() {
 		s = new Stack();
-		s.initialise(0);
+		s.initialise();
 	}
 
 	void produce() {
-		s.put(new Node(0));
-		s.put(new Node(1));
+		s.put(new Info(0));
+		s.put(new Info(1));
 	}
 
 	void produce(int j) {
 		int i = 0;
 		do {
-			s.put(new Node(i++));
+			s.put(new Info(i++));
 		} while(i < j);
 	}
 

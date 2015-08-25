@@ -1,4 +1,4 @@
-package CoCoPOPS.solutions.collection;
+package CoCoPOPS.demo.collection;
 
 class Collection typestate CollectionProtocol {
 	private Info [] array;

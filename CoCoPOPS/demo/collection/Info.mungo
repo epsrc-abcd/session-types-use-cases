@@ -1,4 +1,4 @@
-package CoCoPOPS.solutions.collection;
+package CoCoPOPS.demo.collection;
 
 public class Info {
 	private int i;

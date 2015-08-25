@@ -1,4 +1,4 @@
-package CoCoPOPS.solutions.socketSession;
+package CoCoPOPS.demo.socketSession;
 
 import java.net.ServerSocket;
 import java.io.IOException;

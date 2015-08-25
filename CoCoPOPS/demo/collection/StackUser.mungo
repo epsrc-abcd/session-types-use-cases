@@ -2,18 +2,18 @@ package CoCoPOPS.demo.collection;
 
 class StackUser typestate StackUserProtocol {
 	Stack produce(Stack s) {
-		s.put(new Node(0));
-		s.put(new Node(1));
-		s.put(new Node(2));
-		s.put(new Node(3));
-		s.put(new Node(4));
+		s.put(new Info(0));
+		s.put(new Info(1));
+		s.put(new Info(2));
+		s.put(new Info(3));
+		s.put(new Info(4));
 		return s;
 	}
 
 	Stack produce(Stack s, int j) {
 		int i = 0;
 		do {
-			s.put(new Node(i++));
+			s.put(new Info(i++));
 		} while(i < j);
 
 		return s;
@@ -40,7 +40,7 @@ class StackUser typestate StackUserProtocol {
 
 	public static void main(String []args) {
 		Stack s = new Stack();
-		s.initialise(0);
+		s.initialise();
 
 		StackUser su = new StackUser();
 		s = su.produce(s);
