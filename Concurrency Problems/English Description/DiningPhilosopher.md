@@ -1,0 +1,3 @@
+N philosophers are competing to eat while sitting around a round table. There is one fork between each two philosophers and a philosopher needs two forks to eat. The challenge is to avoid deadlocks, where no one can eat, because everyone is possessing exactly one fork. One solution is to implement it using **Arbitrator** actor that coordinates the resources (the forks) between **Philosopher** actors. The **Arbitrator** either accepts a **Philosopher** request or rejects it, depending on the current resources allocated. If rejected, the **Philosopher** keeps sending requests until accepted. 
+
+Link: http://www.usingcsp.com/cspbook.pdf

@@ -1,0 +1,12 @@
+global protocol Big (role A, role B, role Sink as S){
+	par { ping() from A to B;
+		  pong() from B to A;
+		  done() from A to S;
+	} and {
+		  ping() from B to A;
+		  pong() from A to B;
+		  done() from B to S; 
+	}
+	done() from S to A;
+	done() from S to B;
+}

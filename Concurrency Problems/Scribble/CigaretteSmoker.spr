@@ -1,0 +1,10 @@
+global protocol CigaretteSmoker(role Arbiter as A, 
+	role Smoker[1..N] as S)
+{
+	rec Loop {
+		choice at A {
+			start_smoking() from A to S[i];
+			started_smoking() from S[i] to A;
+			continue Loop;
+		} or {
+			exit() from A to S[i..n]; }}}

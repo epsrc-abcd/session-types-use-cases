@@ -1,0 +1,20 @@
+global protocol DiningPhilosophers(role arbitrator as A, role Philisopher[1..N])
+{
+	par[i:1..n] { DiningPhilosopher(A, Philisopher[i]); }
+}
+
+global protocol DiningPhilosopher(
+	role Arbitrator as A, role Philosopher as Ph)
+{rec L {
+	choice at Ph {
+	   rec M {
+		req() from Ph to A;
+		choice at A {
+			yes() from A to Ph;
+			continue L;
+		} or {
+			no() from A to Ph;
+			continue M;
+		} }} or {
+		done() from Ph to A;
+		} } }

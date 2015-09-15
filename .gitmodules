@@ -1,0 +1,6 @@
+[submodule "Sill programming language/sill"]
+	path = Sill programming language/sill
+	url = https://github.com/ISANobody/sill.git
+[submodule "Sill Programming Language/sill"]
+	path = Sill Programming Language/sill
+	url = https://github.com/ISANobody/sill.git
