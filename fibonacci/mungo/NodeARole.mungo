@@ -1,0 +1,36 @@
+package fibonacci;
+
+import java.net.ServerSocket;
+import java.io.IOException;
+
+class NodeARole typestate NodeAProtocol {
+	private SessionSocket s;
+
+	NodeARole(int port) {
+		try {
+				ServerSocket listener = new ServerSocket(port);
+				s = new SessionSocket(listener.accept());
+		}
+		catch(IOException e) {
+				e.printStackTrace();
+				System.exit(-1);
+		}
+	}
+
+	void sendNEXTToB() {
+		s.send(new Choice(Choice.NEXT));
+	}
+
+	void sendENDToB() {
+		s.send(new Choice(Choice.END));
+	}
+
+	void sendLongToB(long a) {
+		s.send(a);
+	}
+
+	long receiveLongFromB() {
+		return s.receiveLong();
+	}
+
+}

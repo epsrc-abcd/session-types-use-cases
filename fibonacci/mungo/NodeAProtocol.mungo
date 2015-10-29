@@ -1,0 +1,12 @@
+package fibonacci;
+
+typestate NodeAProtocol {
+	Init	=	{
+					void sendNEXTToB(): Compute ,
+					void sendENDToB(): end
+				}
+
+	Compute	=	{
+					void sendLongToB(long): {long receiveLongFromB(): Init}
+				}
+}
