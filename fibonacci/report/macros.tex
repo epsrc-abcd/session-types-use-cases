@@ -1,0 +1,55 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Author  :	Dimitrios Kouzapas
+% Title	  :	Macros for usecases report
+%
+% Comments: Use this template, packages and macros to write reports for
+%			the rest of	the usecases. Please see the contents of the file
+%			to reduce conflicts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%               Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{comment}
+
+\usepackage{xspace}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Tikz packagess
+\usepackage{pgf}
+\usepackage{tikz}
+\usetikzlibrary{arrows,automata,positioning}
+\usepackage[latin1]{inputenc}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Listing parameters
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcommand*\lstnumberstyle{\ttfamily\scriptsize\textcolor{lightgray}}
+\lstset{
+	emph={
+	local, global, protocol, choice, or, at, role, from, to, self,
+		typestate, enum, end, %String, Code, Price, Travel
+	},
+	emphstyle={\color{blue}},
+	numberstyle=\lstnumberstyle,
+	basicstyle=\footnotesize\ttfamily,
+	keywordstyle=\color{blue},
+	breaklines=false,
+	commentstyle=\color{purple}\ttfamily,
+	language=Java,
+	%numbers=left,
+	captionpos=b,
+	numbersep=4pt,
+	mathescape=true
+}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%               Text macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\Mungo}{\ensuremath{\mathsf{Mungo}}\xspace}

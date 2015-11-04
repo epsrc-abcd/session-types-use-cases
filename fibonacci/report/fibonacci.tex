@@ -1,0 +1,257 @@
+\section{Description}
+
+In this report we describe the implementation of a
+concurrent Fibonacci algorithm that uses structured
+communication based on global types.
+The implementation is done on the \Mungo framework.
+The Fibonacci sequence is a sequence where each
+number in the sequence is equal to the sum
+of the two previous number in the sequence:
+%
+\begin{eqnarray*}
+	T_0 &=& 0 \\
+	T_1 &=& 1\\
+	T_n &=& T_{n-1} + T_{n-2}
+\end{eqnarray*}
+
+\section{Algorithm}
+The algorithm requires two threads that communicate
+over a channel with a socket interface.
+The communication of the two threads is described by a
+two role global protocol, thus each thread implements
+a role of the protocol.
+
+The programs initialises its state by:
+%
+\begin{itemize}
+	\item	Creating two threads. One to execute the code of
+			role $A$ and the other to execute the code of
+			role $B$.
+
+	\item	Roles $A$ and $B$ create, respectively,
+			the two endpoints of a channel. Each endpoint
+			is an object with a socket interface.
+
+	\item	Role $A$ is given an number, which is the number
+			of the Fibonacci number to be computed.
+%			that is stored
+%			in variable $i$.
+
+	\item	Role $A$ initialises its Fibonacci number
+			with the
+			the zero Fibonacci number $T_0 = 0$ and 
+			role $B$ initialises its Fibonacci number with
+			the first Fibonacci number $T_1 = 1$.
+\end{itemize}
+
+Both roles follow a global protocol that is described
+in Scribble. The protocol's projection is then used to
+derive typestates for the socket endpoint of $A$ and
+the socket endpoint of $B$.
+
+The protocol dictates that $A$ decides whether to iterate over a computation
+state that sends a label to $B$ to continue computation or send the
+end label to $B$ and end the protocol.
+In the former case $A$ sends its Fibonacci number to $B$, $B$ adds
+the received number to its Fibonacci number to 
+compute the next Fibonacci number and sends the result back to $A$.
+$A$ then decides whether to continue computation or stop on the number
+of iterations done, so to compute the desired Fibonacci number.
+Note that each computation performed in either $A$ or $B$ computes a
+Fibonacci number.
+
+\section{Scribble Protocol}
+
+\paragraph{Global Protocol}
+We give the Scribble protocol, that describes the communication
+global communication in the above Fibonacci implementation.
+%
+\begin{lstlisting}[caption={Global Protocol}]
+global protocol Fibonacci(role A, role B) {
+  rec Fib {
+    choice at A {
+      fibonacci(long) from A to B;
+      fibonacci(long) from B to A;
+      continue Fib;
+    } or {
+      end() from A to B;
+    }
+  }
+}
+\end{lstlisting}
+
+The above protocol starts by declaring a recursive block
+with recursive variable \lstinline|Fib|.
+Inside the recursion role $A$ decides whether to send
+a \lstinline|long| integer (Java primitive data-type)
+to role $B$ or send an \lstinline|end| to role $B$.
+In the former case role's $A$ message will be followed
+by role $B$ sending a \lstinline|long| integer. The protocol
+then performs a recursion on the recursive variable.
+In role's $A$ latter choice the protocol terminates.
+
+\paragraph{Local projection}
+The global protocol is used to project the communication
+behaviour of roles $A$ and B.
+
+\begin{lstlisting}[caption={Local Protocol for Role A}]
+local protocol Fibonacci at A(role A, role B) {
+  rec Fib {
+    choice at A {
+      fibonacci(long) to B;
+      fibonacci(long) from B;
+      continue Fib;
+    } or {
+      end() to B;
+    }
+  }
+}
+\end{lstlisting}
+
+The code above describes the global protocol from role's $A$
+point of view. It give the exact communication actions that
+role $A$ needs to do in order to respect the global protocol.
+
+\begin{lstlisting}[caption={Local Protocol for Role B}]
+local protocol Fibonacci at B(role A, role B) {
+  rec Fib {
+    choice at A {
+      fibonacci(long) from A;
+      fibonacci(long) to A;
+      continue Fib;
+    } or {
+      end() from A;
+    }
+  }
+}
+\end{lstlisting}
+
+Dually, the code above describes the global protocol from
+the point of view of role $B$. Role $B$ needs to perform
+the dual communication actions with respect to role $A$
+in order to respect the global protocol.
+
+
+\section{Typestate}
+
+For the purpose of implementing the concurrent Fibonacci
+algorithm in \Mungo,
+we translate the Scribble local protocols for roles
+$A$ and $B$ to \Mungo typestate syntax.
+The translation can be done automatically;
+an automatic translation first derives an
+enumeration type:
+
+\begin{lstlisting}[caption={Enumeration for the communication choice}]
+enum Choice implements java.io.Serializable {
+  FIBONACCI, END;
+}
+\end{lstlisting}
+
+The enumeration represents the
+labels used by the Scribble protocol
+to perform choice between roles. In this
+case we have labels \lstinline|FIBONACCI| and
+\lstinline|END| that correspond to the choices
+made by role $A$.
+
+The local projection of role $A$ will be translated to typestate:
+
+\begin{lstlisting}[caption={Typestate for Role A}]
+typestate AFibonacci {
+  State0 = {
+    void send_fibonacciToB() : State1,
+    void send_endToB() : end,
+   }
+
+  State1 = {
+    void send_longToB(long): State2
+  }
+
+  State2 = {
+    int receive_longFromB(): State0
+  }
+}
+\end{lstlisting}
+
+The initial state is \lstinline|State0| where
+role $A$ chooses whether to send call method
+\lstinline|void send_fibonacciToB()| that
+will send enumeration label \lstinline|FIBONACCI| to role $B$
+and then proceed to \lstinline|State1|. The other
+choice for role $A$ is to invoke method
+\lstinline|void send_endToB()| that sends
+enumeration label \lstinline|END| to role $B$
+and then ends the protocol.
+\lstinline|State1| requires that role $A$ invokes
+method \lstinline|void send_longToB(long)| that
+is used to send a \lstinline|long| integer to role
+$B$ and then proceed to \lstinline|State2|. In 
+\lstinline|State2| role $A$ should invoke method
+\lstinline|long receive_longFromB()| that will
+receive a \lstinline|long| integer from role $B$.
+The protocol then continues in \lstinline|State0|.
+
+
+The local projection of role $A$ will be translated to typestate:
+
+\begin{lstlisting}[caption={Typestate for Role A}]
+typestate BFibonacci {
+  State0 = {
+    void receive_ChoiceFromA() : <FIBONACCI: State1, END: end>
+  }
+
+  State1 = {
+    int receive_intFromA(): State2
+  }
+
+  State2 = {
+    void send_intToA(int): State0
+  }
+}
+\end{lstlisting}
+
+The typestate for role $B$ starts with \lstinline|State0|
+that performs an external choice on method
+\lstinline|void receive_ChoiceFromA()| that will receive
+one of the enumeration labels of the \lstinline|Choice|
+if the label received is \lstinline|FIBONACCI| the state
+will proceed to \lstinline|State1| or if the label
+received is \lstinline|END| the protocol will terminate.
+States \lstinline|State1| and \lstinline|State2| perform
+a dual communication pattern than the respective states
+in the typestate of role A.
+
+
+\begin{comment}
+We could refine the automated code to be more readable:
+\begin{lstlisting}
+typestate AFibonacci {
+  Fibonacci = {
+    void send_fibonacciToB() : PingPong,
+    void send_endToB() : end,
+  }
+
+  PingPong	=	{
+    void send_intToB(int): { 
+      int receive_intFromB(): Fibonacci
+    }
+  }
+}
+\end{lstlisting}
+
+\begin{lstlisting}
+typestate BFibonacci {
+  Fibonacci = {
+    void receive_ChoiceFromA() : <FIBONACCI: PingPong, END: end>
+  }
+
+  PingPong = {
+    int receive_intFromA(): {
+      void send_intToA(int): State0
+    }
+  }
+}
+\end{lstlisting}
+\end{comment}
+
