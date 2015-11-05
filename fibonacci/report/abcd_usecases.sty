@@ -8,26 +8,21 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%               Packages
+%                 Packages
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \usepackage{comment}
 
 \usepackage{xspace}
-\usepackage{listings}
 \usepackage{xcolor}
 
-% Tikz packagess
-\usepackage{pgf}
-\usepackage{tikz}
-\usetikzlibrary{arrows,automata,positioning}
-\usepackage[latin1]{inputenc}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%            Listing parameters
+%        Listing - packages and macros
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+\usepackage{listings}
 
 \newcommand*\lstnumberstyle{\ttfamily\scriptsize\textcolor{lightgray}}
 \lstset{
@@ -47,6 +42,24 @@
 	numbersep=4pt,
 	mathescape=true
 }%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%          Tikz - packages and macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tikz packages
+\usepackage{pgf}
+\usepackage{tikz}
+\usetikzlibrary{arrows,automata,positioning}
+\usepackage[latin1]{inputenc}
+
+\newenvironment{statemachine}
+{
+	\bgroup \begin{tikzpicture}[->,>=stealth',auto,node distance=2.8cm, semithick]
+}
+{
+	\end{tikzpicture} \egroup
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %               Text macros
