@@ -8,7 +8,7 @@
 
 \documentclass{article}
 
-\input{macros}				% Use this macro file in all reports
+\usepackage{abcd_usecases}				% Use this .sty file in all reports
 
 \title{A Concurrent Implementation of the Fibonacci Algorithm}
 \author{Dimitrios Kouzapas}
@@ -17,5 +17,7 @@
 \begin{document}
 	\maketitle
 	\input{fibonacci}
+	\input{scribble}
+	\input{typestate}
 	\input{state_machine}
 \end{document}
