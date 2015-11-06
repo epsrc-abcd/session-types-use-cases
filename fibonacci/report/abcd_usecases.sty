@@ -53,9 +53,9 @@
 \usetikzlibrary{arrows,automata,positioning}
 \usepackage[latin1]{inputenc}
 
-\newenvironment{statemachine}
+\newenvironment{statemachine}[1][]
 {
-	\bgroup \begin{tikzpicture}[->,>=stealth',auto,node distance=2.8cm, semithick]
+	\bgroup \begin{tikzpicture}[->,>=stealth',auto, semithick, #1]
 }
 {
 	\end{tikzpicture} \egroup
