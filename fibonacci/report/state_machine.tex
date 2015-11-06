@@ -1,11 +1,11 @@
 \section{State Machine}
 
 
-\begin{statemachine}
-	\node[initial,state]		(S0)								{\lstinline|State0|};
-	\node[state]				(S1)	[above right=2.5cm of S0]	{\lstinline|State1|};
-	\node[state]				(S2)	[below right=2.5cm of S1]	{\lstinline|State2|};
-	\node[state,accepting]		(END)	[below of=S0]				{\lstinline|End|};
+\begin{statemachine}[node distance=4cm]
+	\node[initial,state]		(S0)							{\lstinline|State0|};
+	\node[state]				(S1)	[above right of=S0]		{\lstinline|State1|};
+	\node[state]				(S2)	[below right of=S1]		{\lstinline|State2|};
+	\node[state,accepting]		(END)	[below =2cm of S0]		{\lstinline|End|};
 
 
 	\path	(S0)	edge			node 		{\lstinline|void send_fibonacciToB()|}	(S1)
@@ -14,12 +14,12 @@
 			(S2)	edge			node		{\lstinline|void receive_longFromB()|}	(S0);
 \end{statemachine}
 
-\begin{statemachine}
+\begin{statemachine}[node distance=5cm]
 	\node[initial,state]		(S0)								{\lstinline|State0|};
-	\node[state]				(Ch)	[right=4cm of S0]				{\lstinline|Choice|};
-	\node[state]				(S1)	[above of=Ch]				{\lstinline|State1|};
-	\node[state]				(S2)	[above of=S0]				{\lstinline|State2|};
-	\node[state,accepting]		(END)	[below of=Ch]				{\lstinline|End|};
+	\node[state]				(Ch)	[right of=S0]				{\lstinline|Choice|};
+	\node[state]				(S1)	[above =2cm of Ch]			{\lstinline|State1|};
+	\node[state]				(S2)	[above =2cm of S0]			{\lstinline|State2|};
+	\node[state,accepting]		(END)	[below =2cm of Ch]			{\lstinline|End|};
 
 
 	\path	(S0)	edge			node[below]		{\lstinline|void send_ChoiceToB()|}		(Ch)

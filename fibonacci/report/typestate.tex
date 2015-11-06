@@ -21,7 +21,7 @@ case we have labels \lstinline|FIBONACCI| and
 \lstinline|END| that correspond to the choices
 made by role $A$.
 
-The local projection of role $A$ will be translated to typestate:
+The local projection of role $A$ is automatically translated to typestate:
 
 \begin{lstlisting}[caption={Typestate for Role A}]
 typestate AFibonacci {
@@ -59,9 +59,9 @@ receive a \lstinline|long| integer from role $B$.
 The protocol then continues in \lstinline|State0|.
 
 
-The local projection of role $A$ will be translated to typestate:
+The local projection of role $B$ is automatically translated to typestate:
 
-\begin{lstlisting}[caption={Typestate for Role A}]
+\begin{lstlisting}[caption={Typestate for Role B}]
 typestate BFibonacci {
   State0 = {
     void receive_ChoiceFromA() : <FIBONACCI: State1, END: end>
