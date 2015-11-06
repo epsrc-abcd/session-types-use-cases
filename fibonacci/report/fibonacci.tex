@@ -1,11 +1,12 @@
 \section{Description}
 
 In this report we describe the implementation of a
-concurrent Fibonacci algorithm that uses structured
-communication based on global types.
+concurrent algorithm that computes the Fibonacci
+sequence. The communication between the concurrent 
+programs is described using global types.
 The implementation is done on the \Mungo framework.
-The Fibonacci sequence is a sequence where each
-number in the sequence is equal to the sum
+The Fibonacci sequence is a sequence of numbers;
+each number in the sequence is equal to the sum
 of the two previous number in the sequence:
 %
 \begin{eqnarray*}
@@ -26,22 +27,20 @@ The initial state of the Fibonacci program is:
 %
 \begin{itemize}
 	\item	The program creates two threads; the first thread
-			executes the code of role $A$ and the second thread
-			executes the code of role $B$.
+			executes the code of role \A and the second thread
+			executes the code of role \B.
 
-	\item	Roles $A$ and $B$ create, respectively,
+	\item	Roles \A and \B create, respectively,
 			the two endpoints of a channel. Each endpoint
 			is an object with a socket interface.
 
-	\item	Role $A$ is given an number, which is the number
+	\item	Role \A takes as input the sequence number
 			of the Fibonacci number to be computed.
-%			that is stored
-%			in variable $i$.
 
-	\item	Role $A$ initialises its Fibonacci number
+	\item	Role \A initialises its Fibonacci number
 			with the
 			the zero Fibonacci number $T_0 = 0$ and 
-			role $B$ initialises its Fibonacci number with
+			role \B initialises its Fibonacci number with
 			the first Fibonacci number $T_1 = 1$.
 \end{itemize}
 
@@ -50,15 +49,15 @@ Both roles follow a global communication protocol
 Each of the roles implemented their own contribution
 of the global communication protocol.
 
-The protocol dictates that $A$ decides whether to iterate over a computation
-state that sends a message to $B$ to continue computation or send a message to $B$
+The protocol dictates that \A decides whether to iterate over a computation
+state that sends a message to \B to continue computation or send a message to \B
 to end the protocol.
-In the former case $A$ sends its Fibonacci number to $B$, $B$ adds
+In the former case \A sends its Fibonacci number to \B, \B adds
 the received number to its Fibonacci number to 
-compute the next Fibonacci number and sends the result back to $A$.
-$A$ then decides whether to continue computation or stop. The decision
+compute the next Fibonacci number and sends the result back to \A.
+Role \A then decides whether to continue computation or stop. The decision
 is based on the number of iterations done, so to compute the desired Fibonacci number.
-Note that each computation performed in either $A$ or $B$ computes a
+Note that each computation performed in either role \A or role \B, computes a
 Fibonacci number.
 
 

@@ -2,7 +2,7 @@
 
 \paragraph{Global Protocol}
 We give the Scribble protocol, that formally specifies the
-global communication as described in \secref{subsec:algorithm}.
+global communication described in \secref{subsec:algorithm}.
 %
 \begin{lstlisting}[caption={Global Protocol}]
 global protocol Fibonacci(role A, role B) {
@@ -12,7 +12,7 @@ global protocol Fibonacci(role A, role B) {
       fibonacci(long) from B to A;
       continue Fib;
     } or {
-      end() from A to B;
+      stop() from A to B;
     }
   }
 }
@@ -20,19 +20,19 @@ global protocol Fibonacci(role A, role B) {
 
 The above protocol starts by declaring a recursive block
 with recursive variable \lstinline|Fib|.
-Inside the recursion role $A$ decides whether to send
+Inside the recursion role \A decides whether to send
 a \lstinline|long| integer (Java primitive data-type)
-to role $B$ or send an \lstinline|end| to role $B$.
-In the former case role's $A$ message will be followed
-by role $B$ sending a \lstinline|long| integer. The protocol
+to role \B or send an \lstinline|stop| to role \B.
+In the former case role's \A message will be followed
+by role \B sending a \lstinline|long| integer. The protocol
 then performs a recursion on the recursive variable.
-In role's $A$ latter choice the protocol terminates.
+In role's \A latter choice the protocol terminates.
 
 \paragraph{Local projection}
 The global protocol is used to project the communication
-behaviour of roles $A$ and B.
+behaviour of roles \A and \B.
 
-\begin{lstlisting}[caption={Local Protocol for Role A}]
+\begin{lstlisting}[caption={Local Protocol for Role \A}]
 local protocol Fibonacci at A(role A, role B) {
   rec Fib {
     choice at A {
@@ -40,17 +40,17 @@ local protocol Fibonacci at A(role A, role B) {
       fibonacci(long) from B;
       continue Fib;
     } or {
-      end() to B;
+      stop() to B;
     }
   }
 }
 \end{lstlisting}
 
-The code above describes the global protocol from role's $A$
+The code above describes the global protocol from role's \A
 point of view. It give the exact communication actions that
-role $A$ needs to do in order to respect the global protocol.
+role \A needs to do in order to respect the global protocol.
 
-\begin{lstlisting}[caption={Local Protocol for Role B}]
+\begin{lstlisting}[caption={Local Protocol for Role \B}]
 local protocol Fibonacci at B(role A, role B) {
   rec Fib {
     choice at A {
@@ -58,15 +58,15 @@ local protocol Fibonacci at B(role A, role B) {
       fibonacci(long) to A;
       continue Fib;
     } or {
-      end() from A;
+      stop() from A;
     }
   }
 }
 \end{lstlisting}
 
 Dually, the code above describes the global protocol from
-the point of view of role $B$. Role $B$ needs to perform
-the dual communication actions with respect to role $A$
+the point of view of role \B. Role \B needs to perform
+the dual communication actions with respect to role \A
 in order to respect the global protocol.
 
 
