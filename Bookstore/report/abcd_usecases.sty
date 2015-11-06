@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Author  :	Dimitrios Kouzapas
-% Title	  :	Macros for usecases report
+% Title	  :	package for usecases report
 %
 % Comments: Use this template, packages and macros to write reports for
 %			the rest of	the usecases. Please see the contents of the file
@@ -16,11 +16,18 @@
 \usepackage{xspace}
 \usepackage{xcolor}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%             Formatting macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Role
+\newcommand{\rolefont}[1]{\ensuremath{\mathtt{#1}}\xspace}		% The font to be used for the names of role in the text
+\newcommand{\code}[1]{\ensuremath{\mathtt{#1}}\xspace}			% The font to be used code in the text
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %        Listing - packages and macros
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 \usepackage{listings}
 
@@ -28,7 +35,7 @@
 \lstset{
 	emph={
 	local, global, protocol, choice, or, at, role, from, to, self,
-		typestate, enum, end, %String, Code, Price, Travel
+		typestate, enum, end
 	},
 	emphstyle={\color{blue}},
 	numberstyle=\lstnumberstyle,
@@ -60,6 +67,12 @@
 {
 	\end{tikzpicture} \egroup
 }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    UML sequence diagrams - packages and macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{pgf-umlsd}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %               Text macros
