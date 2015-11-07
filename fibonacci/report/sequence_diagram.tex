@@ -1,0 +1,22 @@
+\section{Sequence Diagram}
+
+
+\begin{sequencediagram}
+	\mythread{RoleA}{Role A}
+	\mythread[4]{RoleB}{Role B}
+
+%	\begin{sdblock}{Communication protocol}{}
+		\begin{sdblock}{Loop}{}
+			\mymess{RoleA}{\code{FIBONACCI}}{RoleB}
+			\mymess{RoleA}{\code{fibonacci(long)}}{RoleB}
+			\mymess{RoleB}{\code{fibonacci(long)}}{RoleA}
+		\end{sdblock}
+
+%		\separateline{RoleA}{RoleB}
+
+		\begin{messcall}{RoleA}{\code{STOP}}{RoleB}
+		\end{messcall}
+%	\end{sdblock}
+\end{sequencediagram}
+
+
