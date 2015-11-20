@@ -1,6 +1,15 @@
 \section{State Machine}
 
+We present the communication state machines for role
+\A and role \B. The state machine are the graphical
+representation of the scribble local protocol;
+see \secref{sec:scribble} for the local scribble protocols
+of roles \A and \B. Alternatively we can view
+the state machines as graphical represntantions
+of the typestate of roles \A and \B in \secref{sec:typestate}.
 
+We present the state machine for role \A:
+\begin{figure}[H]
 \begin{statemachine}[node distance=4cm]
 	\node[initial,state]		(S0)							{\lstinline|State0|};
 	\node[state]				(S1)	[above right of=S0]		{\lstinline|State1|};
@@ -13,7 +22,12 @@
 			(S1)	edge			node		{\lstinline|void send_longToB()|}		(S2)
 			(S2)	edge			node		{\lstinline|void receive_longFromB()|}	(S0);
 \end{statemachine}
+\caption{State Machine: Role \A}
+\end{figure}
 
+The state machine for role \B follows:
+
+\begin{figure}[H]
 \begin{statemachine}[node distance=5cm]
 	\node[initial,state]		(S0)								{\lstinline|State0|};
 	\node[state]				(Ch)	[right of=S0]				{\lstinline|Choice|};
@@ -28,4 +42,5 @@
 			(S1)	edge			node[above]		{\lstinline|void receive_longFromA()|}	(S2)
 			(S2)	edge			node[left]		{\lstinline|void send_longToA()|}		(S0);
 \end{statemachine}
-
+\caption{State Machine: Role \B}
+\end{figure}
