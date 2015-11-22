@@ -106,7 +106,8 @@ public class SimpleClient
 	}
 
 	private <S1 extends Succ_In_S_250, S2 extends Branch_C_S_250__S_250d<S1, S2>>
-			S1 doEhlo(Select_C_S_Ehlo__S_Quit<S2, ?> s, String ehlo) throws Exception
+			//S1 doEhlo(Select_C_S_Ehlo__S_Quit<S2, ?> s, String ehlo) throws Exception
+			S1 doEhlo(Select_C_S_Ehlo<S2> s, String ehlo) throws Exception
 	{
 		Branch_C_S_250__S_250d<S1, S2> bra = s.send(S, new Ehlo(ehlo));
 		while (true)
