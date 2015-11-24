@@ -1,0 +1,153 @@
+\section{Implementation}
+In this section we describe the implementation
+details of the Bookstore scenario.
+
+\subsection{\Mungo Implementation}
+
+For the purpose of implementing the Bookstore
+algorithm in \Mungo,
+we translate the Scribble local protocols for roles
+$A$ and $B$ to \Mungo typestate syntax.
+The translation can be done automatically;
+an automatic translation first derives an
+enumeration type:
+
+\begin{lstlisting}[caption={Enumeration for the communication choice}]
+enum Choice implements java.io.Serializable {
+  AGREE, QUIT;
+}
+\end{lstlisting}
+
+The enumeration represents the
+labels used by the Scribble protocol
+to perform choice between roles. In this
+case we have labels \lstinline|AGREE| and
+\lstinline|QUIT| that correspond to the choices
+made by role \BuyerTwo.
+
+The local projection of role \BuyerOne is automatically translated to typestate:
+
+\begin{lstlisting}[caption={Typestate for Role \BuyerOne}]
+typestate Buyer1Protocol {
+  State0 = {
+    void send_bookToSeller(Title): State1
+  }
+
+  State1 = {
+    Price receive_bookFromSeller(): State2
+  }
+
+  State2 = {
+    void send_quoteToBuyer2(Contribution): State3
+  }
+
+  State3 = {
+    Choice receive_ChoiceFromBuyer2(): <AGREE: State4, QUIT: end>
+  }
+
+  State4 = {
+    void send_transferToSeller(Money): end
+  }
+}
+\end{lstlisting}
+
+The initial state is \lstinline|State0| where
+role \BuyerOne uses method \lstinline|void send_bookToSeller(title)|
+to send a book title to \Seller
+and proceed to \lstinline|State1|. In \lstinline|State1|
+\BuyerOne receives a price from the \Seller for the book via
+the invocation of method \lstinline|Price receive_bookFromSeller()|
+and proceeds to \lstinline|State2|, where
+it calls method \lstinline|void send_quoteToBuyer2(Contribution)|
+to inform \BuyerTwo about a  possible contribution. The latter
+action results in \lstinline|State3|.
+In \lstinline|State3| \BuyerOne calls method
+\lstinline|Choice receive_ChoiceFromBuyer2()| and awaits
+for a choice from \BuyerTwo; the choice \lstinline|AGREE|
+proceeds the protocol to \lstinline|State4| and
+choice \lstinline|QUIT| ends the protocol. Finally,
+in \lstinline|State4| \BuyerOne uses method
+\lstinline|void send_transferToSeller(Money)| to
+send transfer money to the \Seller.
+
+
+The local projection of role \BuyerTwo is automatically translated to typestate:
+
+\begin{lstlisting}[caption={Typestate for Role \BuyerTwo}]
+typestate BuyerTwoProtocol{
+  State0 = {
+    Contribution receive_quoteFromBuyer1(): State1
+
+  State1 = {
+    void send_AGREEToBuyer1: State2,
+    void send_QUITToBuyer1: State4
+  }
+
+  State2 = {
+    void send_AGREEToSeller: State3
+  }
+
+  State3 = {
+    void send_transferToSeller(Money): end
+  }
+
+  State4 = {
+    void send_QUITToSeller(): end
+  }
+}
+\end{lstlisting}
+
+
+\begin{lstlisting}[caption={Typestate for Role \Seller}]
+  State0 = {
+    Title receive_bookFromBuyer1(): State1
+  }
+
+  State1 = {
+    void send_bookToBuyer1(Price): State2
+  }
+
+  State2 = {
+    Choice receive_ChoiceFromBuyer2(): <AGREE: State3, QUIT: end>
+  }
+
+  State3 = {
+    Money receive_transferFromBuyer1(): State4
+  }
+
+  State4 = {
+    Money receive_transferFromBuyer2(): end
+  }
+\end{lstlisting}
+
+\subsubsection{Implementation in \Mungo}
+
+We have implemented two versions of the Bookstore scenario in
+\Mungo, based on the underline communication layer. The first
+version implements a socket interface on top of a shared
+memory structure. The second versions uses the Java socket
+interface from the \code{Java.net.*} package.
+
+The shared memory implementation is used for demonstration purposes
+does not implement concurrent components; roles \BuyerOne,
+\BuyerTwo and \Seller are instantiated as objects in a single
+method in the \code{Main.java} file and they are interacting
+in a sequential discipline.
+
+The socket implementation is a concurrent implementation and
+requires running three different JVM processes to instatiate
+the roles \BuyerOne, \BuyerTwo, and \Seller. The \Seller role
+acts as the server side for both the sockets of
+\BuyerOne, and \BuyerTwo. Similarly, \BuyerTwo acts as the server
+for the socket connection between \BuyerOne and \BuyerTwo.
+Classes \code{Buyer1Main.java}, \code{Buyer2Main.java}, and
+\code{SellerMain.java} implement the communication interaction
+of the three roles, respectively, as it is described by the
+typestate protocol of each role.
+
+
+
+
+
+
+

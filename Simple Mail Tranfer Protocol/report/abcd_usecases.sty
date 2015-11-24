@@ -1,0 +1,109 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Author  :	Dimitrios Kouzapas
+% Title	  :	package for usecases report
+%
+% Comments: Use this template, packages and macros to write reports for
+%			the rest of	the usecases. Please see the contents of the file
+%			to reduce conflicts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                 Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{comment}
+
+\usepackage{xspace}
+\usepackage{xcolor}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%             Formatting macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Role
+\newcommand{\rolefont}[1]{\ensuremath{\mathtt{#1}}\xspace}		% The font to be used for the names of role in the text
+\newcommand{\code}[1]{{\footnotesize \texttt{#1}\xspace}}		% The font to be used code in the text
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%        Listing - packages and macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{listings}
+
+\newcommand*\lstnumberstyle{\ttfamily\scriptsize\textcolor{lightgray}}
+\lstset{
+	emph={
+	local, global, protocol, choice, or, at, role, from, to, self,
+		typestate, enum, end
+	},
+	emphstyle={\color{blue}},
+	numberstyle=\lstnumberstyle,
+	basicstyle=\footnotesize\ttfamily,
+	keywordstyle=\color{blue},
+	breaklines=false,
+	commentstyle=\color{purple}\ttfamily,
+	language=Java,
+	%numbers=left,
+	captionpos=b,
+	numbersep=4pt,
+	mathescape=true
+}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%          Tikz - packages and macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tikz packages
+\usepackage{pgf}
+\usepackage{tikz}
+\usetikzlibrary{arrows,automata,positioning}
+\usepackage[latin1]{inputenc}
+
+\newenvironment{statemachine}[1][]
+{
+	\bgroup \begin{tikzpicture}[->,>=stealth',auto, semithick, #1]
+}
+{
+	\end{tikzpicture} \egroup
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    UML sequence diagrams - packages and macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{pgf-umlsd}
+\usepackage{ifthen}
+
+\newenvironment{seqdiag}[1][]
+{
+	\def\argum{#1}
+	\bgroup
+		\begin{figure}[H]
+			\begin{center}
+				\begin{sequencediagram}
+}
+{
+				\end{sequencediagram}
+			\end{center}
+				\ifthenelse{ \equal {\argum} {} }{
+				}{
+					\caption{\argum}
+				}
+		\end{figure}
+	\egroup
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%               Text macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\Mungo}{\ensuremath{\mathsf{Mungo}}\xspace}
+
+
+% References
+\newcommand{\secref}[1]{Section~\ref{#1}}
+\newcommand{\defref}[1]{Definition~\ref{#1}}
+\newcommand{\lemref}[1]{Lemma~\ref{#1}}
+\newcommand{\appref}[1]{Appendix~\ref{#1}}
+\newcommand{\figref}[1]{Figure~\ref{#1}}

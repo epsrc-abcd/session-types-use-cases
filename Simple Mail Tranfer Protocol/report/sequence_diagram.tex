@@ -1,0 +1,24 @@
+\section{Sequence Diagram}
+
+\begin{sequencediagram}
+	\mythread{Buyer1}{\BuyerOne}
+	\mythread[3]{Buyer2}{\BuyerTwo}
+	\mythread[3]{Seller}{\Seller}
+
+	\mymess[near start]{Buyer1}{\code{book(title)}}{Seller}
+	\mymess[near start]{Seller}{\code{book(Price)}}{Buyer1}
+	\mymess{Buyer1}{\code{quote(Contribution)}}{Buyer2}
+
+	\begin{sdblock}{alt}{Choice at \BuyerTwo}
+		\mymess{Buyer2}{\code{AGREE}}{Buyer1}
+		\mymess{Buyer2}{\code{AGREE}}{Seller}
+		\mymess[near start]{Buyer1}{\code{transfer(Money)}}{Seller}
+		\mymess{Buyer2}{\code{transfer(Money)}}{Seller}
+
+		\separateline{Buyer1}{Seller}
+
+		\mymess{Buyer2}{\code{QUIT}}{Buyer1}
+		\mymess{Buyer2}{\code{QUIT}}{Seller}
+	\end{sdblock}
+	 \stepcounter{seqlevel}
+\end{sequencediagram}

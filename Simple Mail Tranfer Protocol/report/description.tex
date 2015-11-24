@@ -1,0 +1,52 @@
+% !TEX root = main.tex
+\section{Description}
+
+In this report we describe the implementation of
+an application layer communication protocol.
+The protocol specifies an interaction between
+an Simple Mail Transfer Protocol (SMTP) client and a \lstinline|gmail| server.
+The protocol is defined using global session types.
+
+\subsection{Bookstore Scenario}
+\label{subsec:description}
+
+The communication interaction takes place between two Buyers,
+role \BuyerOne and role \BuyerTwo, and a Seller,
+role \Seller:
+\begin{enumerate}
+	\item
+			\BuyerOne initiates the interaction
+			by choosing and sending a book title to \Seller,
+			and asking for the price of the book.
+
+	\item
+			The \Seller then checks its database and
+			responds to \BuyerOne with a price for the book.
+
+	\item
+			\BuyerOne calculates and
+			sends a contribution quote to
+			\BuyerTwo in order to request to
+			share the expenses for the book.
+
+	\item
+			\BuyerTwo then decides, depending on
+			the contribution, and
+			either agrees to contribute
+			to the buy or not. In both
+			cases it informs both \BuyerOne
+			and the \Seller.
+
+	\item
+			In the former decision \BuyerOne
+			sends its contribution to the \Seller
+			followed by \BuyerTwo sending its
+			contribution to the \Seller.
+%			The \Seller then dispatches the book.
+
+	\item
+			In the latter decision of \BuyerTwo
+			the protocol terminates.
+\end{enumerate}
+			
+
