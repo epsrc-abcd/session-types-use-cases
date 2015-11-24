@@ -1,6 +1,11 @@
 \section{Scribble Protocol}
 
-\paragraph{Global Protocol}
+We use Scribble to define the global
+protocol for the Bookstore usecase.
+
+\subsection{Global Protocol}
+
+
 \begin{lstlisting}[caption={Global Protocol for Bookstore}]
 global protocol Bookstore(role Buyer1, role Buyer2, role Seller) {
   book(title) from Buyer1 to Seller;
@@ -27,7 +32,7 @@ of the participant roles.
 
 
 
-\paragraph{Local projection}
+\subsection{Local projection}
 The global protocol is used to project the communication
 behaviour of roles $A$ and B.
 

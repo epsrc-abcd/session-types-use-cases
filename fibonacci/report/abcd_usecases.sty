@@ -73,6 +73,26 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \usepackage{pgf-umlsd}
+\usepackage{ifthen}
+
+\newenvironment{seqdiag}[1][]
+{
+	\def\argum{#1}
+	\bgroup
+		\begin{figure}[H]
+			\begin{center}
+				\begin{sequencediagram}
+}
+{
+				\end{sequencediagram}
+			\end{center}
+				\ifthenelse{ \equal {\argum} {} }{
+				}{
+					\caption{\argum}
+				}
+		\end{figure}
+	\egroup
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %               Text macros

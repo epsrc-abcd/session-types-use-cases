@@ -1,4 +1,8 @@
-\section{Typestate}
+\section{Implementation}
+In this section we describe the implementation
+details of the Bookstore scenario.
+
+\subsection{\Mungo Implementation}
 
 For the purpose of implementing the Bookstore
 algorithm in \Mungo,
@@ -115,3 +119,35 @@ typestate BuyerTwoProtocol{
     Money receive_transferFromBuyer2(): end
   }
 \end{lstlisting}
+
+\subsubsection{Implementation in \Mungo}
+
+We have implemented two versions of the Bookstore scenario in
+\Mungo, based on the underline communication layer. The first
+version implements a socket interface on top of a shared
+memory structure. The second versions uses the Java socket
+interface from the \code{Java.net.*} package.
+
+The shared memory implementation is used for demonstration purposes
+does not implement concurrent components; roles \BuyerOne,
+\BuyerTwo and \Seller are instantiated as objects in a single
+method in the \code{Main.java} file and they are interacting
+in a sequential discipline.
+
+The socket implementation is a concurrent implementation and
+requires running three different JVM processes to instatiate
+the roles \BuyerOne, \BuyerTwo, and \Seller. The \Seller role
+acts as the server side for both the sockets of
+\BuyerOne, and \BuyerTwo. Similarly, \BuyerTwo acts as the server
+for the socket connection between \BuyerOne and \BuyerTwo.
+Classes \code{Buyer1Main.java}, \code{Buyer2Main.java}, and
+\code{SellerMain.java} implement the communication interaction
+of the three roles, respectively, as it is described by the
+typestate protocol of each role.
+
+
+
+
+
+
+

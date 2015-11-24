@@ -22,7 +22,7 @@
 
 % Role
 \newcommand{\rolefont}[1]{\ensuremath{\mathtt{#1}}\xspace}		% The font to be used for the names of role in the text
-\newcommand{\code}[1]{\ensuremath{\mathtt{#1}}\xspace}			% The font to be used code in the text
+\newcommand{\code}[1]{{\footnotesize \texttt{#1}\xspace}}		% The font to be used code in the text
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -73,11 +73,26 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \usepackage{pgf-umlsd}
+\usepackage{ifthen}
 
-% The uml sequence diagram package is extended with
-% \mythread[relative position]{node name}{text}
-% \mymess[position relative to arrow]{begin}{text}{end}
-% separateline[tikzstyle]{begin}{end}
+\newenvironment{seqdiag}[1][]
+{
+	\def\argum{#1}
+	\bgroup
+		\begin{figure}[H]
+			\begin{center}
+				\begin{sequencediagram}
+}
+{
+				\end{sequencediagram}
+			\end{center}
+				\ifthenelse{ \equal {\argum} {} }{
+				}{
+					\caption{\argum}
+				}
+		\end{figure}
+	\egroup
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %               Text macros
