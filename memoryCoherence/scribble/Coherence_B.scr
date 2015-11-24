@@ -1,0 +1,57 @@
+module Coherence_B;
+
+type <java> "java.lang.byte" from "rt.jar" as byte;
+
+local protocol ValidAValidB at B(role Decide,role A,role B,role MemoryA,role MemoryB) {
+	choice at Decide {
+		readA() from Decide;
+		do ValidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		readB() from Decide;
+		value(byte) from MemoryB;
+		do ValidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		writeA() from Decide;
+		do ValidAInvalidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		writeB() from Decide;
+		value(byte) to MemoryB;
+		do InvalidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	}
+}
+
+local protocol ValidAInvalidB at B(role Decide,role A,role B,role MemoryA,role MemoryB) {
+	choice at Decide {
+		readA() from Decide;
+		do ValidAInvalidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		readB() from Decide;
+		value(byte) from MemoryB;
+		do ValidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		writeA() from Decide;
+		do ValidAInvalidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		writeB() from Decide;
+		value(byte) to MemoryB;
+		do InvalidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	}
+}
+
+local protocol InvalidAValidB at B(role Decide,role A,role B,role MemoryA,role MemoryB) {
+	choice at Decide {
+		readA() from Decide;
+		do ValidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		readB() from Decide;
+		value(byte) from MemoryB;
+		do InvalidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		writeA() from Decide;
+		do ValidAInvalidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		writeB() from Decide;
+		value(byte) to MemoryB;
+		do InvalidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	}
+}

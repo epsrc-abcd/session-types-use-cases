@@ -1,0 +1,59 @@
+module Coherence_MemoryA;
+
+type <java> "java.lang.byte" from "rt.jar" as byte;
+
+local protocol ValidAValidB at MemoryA(role Decide,role A,role B,role MemoryA,role MemoryB) {
+	choice at Decide {
+		readA() from Decide;
+		value(byte) to A;
+		do ValidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		readB() from Decide;
+		do ValidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		writeA() from Decide;
+		value(byte) from A;
+		do ValidAInvalidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		writeB() from Decide;
+		do InvalidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	}
+}
+
+local protocol ValidAInvalidB at MemoryA(role Decide,role A,role B,role MemoryA,role MemoryB) {
+	choice at Decide {
+		readA() from Decide;
+		value(byte) to A;
+		do ValidAInvalidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		readB() from Decide;
+		value(byte) to MemoryB;
+		do ValidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		writeA() from Decide;
+		value(byte) from A;
+		do ValidAInvalidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		writeB() from Decide;
+		do InvalidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	}
+}
+
+local protocol InvalidAValidB at MemoryA(role Decide,role A,role B,role MemoryA,role MemoryB) {
+	choice at Decide {
+		readA() from Decide;
+		value(byte) from MemoryB;
+		value(byte) to A;
+		do ValidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		readB() from Decide;
+		do InvalidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		writeA() from Decide;
+		value(byte) from A;
+		do ValidAInvalidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		writeB() from Decide;
+		do InvalidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	}
+}

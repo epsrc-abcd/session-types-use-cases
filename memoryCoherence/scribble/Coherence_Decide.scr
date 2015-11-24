@@ -1,0 +1,51 @@
+module Coherence_Decide;
+
+type <java> "java.lang.byte" from "rt.jar" as byte;
+
+local protocol ValidAValidB at Decide(role Decide,role A,role B,role MemoryA,role MemoryB) {
+	choice at Decide {
+		readA() to A,B,MemoryA,MemoryB;
+		do ValidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		readB() to A,B,MemoryA,MemoryB;
+		do ValidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		writeA() to A,B,MemoryA,MemoryB;
+		do ValidAInvalidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		writeB() to A,B,MemoryA,MemoryB;
+		do InvalidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	}
+}
+
+local protocol ValidAInvalidB at Decide(role Decide,role A,role B,role MemoryA,role MemoryB) {
+	choice at Decide {
+		readA() to A,B,MemoryA,MemoryB;
+		do ValidAInvalidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		readB() to A,B,MemoryA,MemoryB;
+		do ValidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		writeA() to A,B,MemoryA,MemoryB;
+		do ValidAInvalidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		writeB() to A,B,MemoryA,MemoryB;
+		do InvalidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	}
+}
+
+local protocol InvalidAValidB at Decide(role Decide,role A,role B,role MemoryA,role MemoryB) {
+	choice at Decide {
+		readA() to A,B,MemoryA,MemoryB;
+		do ValidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		readB() to A,B,MemoryA,MemoryB;
+		do InvalidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		writeA() to A,B,MemoryA,MemoryB;
+		do ValidAInvalidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	} or {
+		writeB() to A,B,MemoryA,MemoryB;
+		do InvalidAValidB(Decide as Decide,A as A,B as B,MemoryA as MemoryA,MemoryB as MemoryB);
+	}
+}

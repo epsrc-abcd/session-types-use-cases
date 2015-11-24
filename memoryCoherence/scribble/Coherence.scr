@@ -1,0 +1,67 @@
+module Coherence;
+
+type <java> "java.lang.byte" from "rt.jar" as byte;
+
+global protocol ValidAValidB(role Decide, role A, role B, role MemoryA, role MemoryB) {
+	choice at Decide {
+		readA() from Decide to A, B, MemoryA, MemoryB;
+		value(byte) from MemoryA to A;
+		do ValidAValidB(Decide as Decide, A as A, B as B, MemoryA as MemoryA, MemoryB as MemoryB);
+	} or {
+		readB() from Decide to A, B, MemoryA, MemoryB;
+		value(byte) from MemoryB to B;
+		do ValidAValidB(Decide as Decide, A as A, B as B, MemoryA as MemoryA, MemoryB as MemoryB);
+	} or {
+		writeA() from Decide to A, B, MemoryA, MemoryB;
+		value(byte) from A to MemoryA;
+		do ValidAInvalidB(Decide as Decide, A as A, B as B, MemoryA as MemoryA, MemoryB as MemoryB);
+	} or {
+		writeB() from Decide to A, B, MemoryA, MemoryB;
+		value(byte) from B to MemoryB;
+		do InvalidAValidB(Decide as Decide, A as A, B as B, MemoryA as MemoryA, MemoryB as MemoryB);
+	}
+}
+
+global protocol ValidAInvalidB(role Decide, role A, role B, role MemoryA, role MemoryB) {
+	choice at Decide {
+		readA() from Decide to A, B, MemoryA, MemoryB;
+		value(byte) from MemoryA to A;
+		do ValidAInvalidB(Decide as Decide, A as A, B as B, MemoryA as MemoryA, MemoryB as MemoryB);
+	} or {
+		readB() from Decide to A, B, MemoryA, MemoryB;
+		value(byte) from MemoryA to MemoryB;
+		value(byte) from MemoryB to B;
+		do ValidAValidB(Decide as Decide, A as A, B as B, MemoryA as MemoryA, MemoryB as MemoryB);
+	} or {
+		writeA() from Decide to A, B, MemoryA, MemoryB;
+		value(byte) from A to MemoryA;
+		do ValidAInvalidB(Decide as Decide, A as A, B as B, MemoryA as MemoryA, MemoryB as MemoryB);
+	} or {
+		writeB() from Decide to A, B, MemoryA, MemoryB;
+		value(byte) from B to MemoryB;
+		do InvalidAValidB(Decide as Decide, A as A, B as B, MemoryA as MemoryA, MemoryB as MemoryB);
+	}
+}
+
+
+global protocol InvalidAValidB(role Decide, role A, role B, role MemoryA, role MemoryB) {
+	choice at Decide {
+		readA() from Decide to A, B, MemoryA, MemoryB;
+		value(byte) from MemoryB to MemoryA;
+		value(byte) from MemoryA to A;
+		do ValidAValidB(Decide as Decide, A as A, B as B, MemoryA as MemoryA, MemoryB as MemoryB);
+	} or {
+		readB() from Decide to A, B, MemoryA, MemoryB;
+		value(byte) from MemoryB to B;
+		do InvalidAValidB(Decide as Decide, A as A, B as B, MemoryA as MemoryA, MemoryB as MemoryB);
+	} or {
+		writeA() from Decide to A, B, MemoryA, MemoryB;
+		value(byte) from A to MemoryA;
+		do ValidAInvalidB(Decide as Decide, A as A, B as B, MemoryA as MemoryA, MemoryB as MemoryB);
+	} or {
+		writeB() from Decide to A, B, MemoryA, MemoryB;
+		value(byte) from B to MemoryB;
+		do InvalidAValidB(Decide as Decide, A as A, B as B, MemoryA as MemoryA, MemoryB as MemoryB);
+	}
+}
+
