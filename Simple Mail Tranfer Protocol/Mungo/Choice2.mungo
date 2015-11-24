@@ -1,4 +1,5 @@
-package demos.Final_demos.SMTP;
-enum Choice2 {
-	_250DASH, _250;
+package FinalSMTP;
+
+public enum Choice2 {
+	_235, _535;
 }

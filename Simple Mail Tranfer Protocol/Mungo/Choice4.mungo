@@ -1,4 +1,5 @@
-package demos.Final_demos.SMTP;
-enum Choice4 {
-	AUTH, QUIT;
+package FinalSMTP;
+
+public enum Choice4 {
+	_250;
 }
