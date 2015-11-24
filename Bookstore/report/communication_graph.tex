@@ -2,20 +2,28 @@
 
 \begin{statemachine}[node distance=6.5cm]
 	\node[initial,state]		(S0)								{\lstinline|State0|};
-	\node[state]				(S1)[right of=S0]					{\lstinline|State1|};
-	\node[state]				(S2)[below =1.5cm of S1]			{\lstinline|State2|};
-	\node[state]				(S3)[left =2cm of S2]			{\lstinline|State3|};
-	\node[state]				(S4)[below =1.5cm of S3]			{\lstinline|State4|};
+	\node[state]				(S1)[below left = 3.25cm of S0]		{\lstinline|State1|};
+	\node[state]				(S2)[right of= S1]					{\lstinline|State2|};
+	\node[state]				(S3)[below = 4cm of S0]				{\lstinline|State3|};
+	\node[state]				(S4)[below = 2.5cm of S1]			{\lstinline|State4|};
 	\node[state]				(S5)[right of=S4]					{\lstinline|State5|};
+	\node[state]				(S6)[below = 1 of S4]				{\lstinline|State6|};
+	\node[state]				(S7)[below = 1 of S6]				{\lstinline|State7|};
+	\node[state, accepting]		(E)[right of = S7]					{\lstinline|End|};
+
 %	\node[state]				(Ch)[below =2cm of S3]				{\lstinline|Choice|};
 
 %	\node[state,accepting]		(END)[below =2cm of Ch]				{\lstinline|END|};
 
 	\path	(S0)	edge	node		{\lstinline|book(Title) from Buyer1 to Seller|}				(S1)
-			(S1)	edge	node[left]	{\lstinline|book(Quote) from Seller to Buyer1|}				(S2)
-			(S2)	edge	node		{\lstinline|quote(Contibution) from Buyer1 to Buyer2|}		(S3)
-			(S3)	edge	node		{\lstinline|agree() from Buyer2 to Buyer1|}					(S4)
-					edge	node		{\lstinline|quit() from Buyer2 to Buyer1|}					(S5);
+			(S1)	edge	node		{\lstinline|book(Quote) from Seller to Buyer1|}				(S2)
+			(S2)	edge	node[left]	{\lstinline|quote(Contibution) from Buyer1 to Buyer2|}		(S3)
+			(S3)	edge	node[left]	{\lstinline|agree() from Buyer2 to Buyer1|}					(S4)
+					edge	node		{\lstinline|quit() from Buyer2 to Buyer1|}					(S5)
+			(S5)	edge	node[left]	{\lstinline|quit() from Buyer2 to Seller|}					(E)
+			(S4)	edge	node[right]	{\lstinline|agree() from Buyer2 to Seller|}					(S6)
+			(S6)	edge	node[right]	{\lstinline|transfer(Money) from Buyer1 to Seller|}			(S7)
+			(S7)	edge	node		{\lstinline|transfer(Money) from Buyer2 to Seller|}			(E);
 
 %	\path	(S0)	edge	node		{\lstinline|void send_bookToSeller(Title)|}				(S1)
 %			(S1)	edge	node[left]	{\lstinline|Price receive_bookFromSeller()|}			(S2)
