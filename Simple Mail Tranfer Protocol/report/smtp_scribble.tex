@@ -2,32 +2,43 @@
 \section{Scribble Protocol}
 
 We use Scribble to define the global
-protocol for the SMTP protocol.
+protocol for the SMTP protocol, based
+on Hu's work~\cite{HuR:smtp}.
 
 \subsection{Global Protocol}
 
-
-\begin{lstlisting}[caption={Global Protocol for Bookstore}]
-global protocol Bookstore(role Buyer1, role Buyer2, role Seller) {
-  book(title) from Buyer1 to Seller;
-  book(price) from Seller to Buyer1;
-  quote(contribution) from Buyer1 to Buyer2;
-
-  choice at Buyer2 {
-    agree() fom Buyer2 to Buyer1, Seller;
-    transfer(money) from Buyer1 to Seller;
-    transfer(money) from Buyer2 to Seller;
-  } or {
-    quit() from Buyer2 to Buyer1, Seller;
-  }
+%
+\begin{lstlisting}[numbers=left]
+global protocol SMTP(role S, role C) {
+ // Global interaction between server and client.
+ _220(String) from S to C;
+ choice at C {
+   ehlo(String) from C to S;
+   rec X {
+     choice at S { _250dash(String) from S to C; continue X; }
+     or {
+       _250(String) from S to C;
+       choice at C { ...
+         rec X1 { ...
+           choice at S { _250dash(String) from S to C; continue X1; }
+           or { 250(String) from S to C; ... 
+             rec Z1 { ... data(String) to S; ...
+               rec Z3 {
+                 choice at C { subject(String) from C to S; continue Z3; }
+                 or { dataline(String) form C to S;  continue Z3; }
+                 or { atad(String) from C to S; _250(String) from S to C; 
+                     continue Z1; } } }   ...
+        }   ...  } } } }
+ } or  { quit(String) from C to S; }
 }
 \end{lstlisting}
 
+
 The above Scribble protocol formally specifies
-the description in \secref{subsec:description}.
-The global protocol \lstinline|Bookstore| specifies
-an interaction between roles \BuyerOne, \BuyerTwo and
-\Seller. The protocol is then projected to the
+the description in \secref{sec: smtp_description}.
+The global protocol \lstinline|SMTP| specifies
+an interaction between two roles being the client ant the server of the protocol.
+The protocol is then projected to the
 individual communication specifications of each 
 of the participant roles.
 
