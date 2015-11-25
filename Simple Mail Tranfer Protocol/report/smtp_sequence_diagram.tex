@@ -3,24 +3,27 @@
 
 \begin{sequencediagram}
 	\mythread{C}{\Client}
-	\mythread[3]{Intermediate}{\Intermediate}
-	\mythread[3]{S}{\Server}
+	\mythread[2]{Intermediate}{\Intermediate}
+	\mythread[2]{S}{\Server}
 
 	\mymess[near start]{S}{\code{\_220(String)}}{Intermediate}
 	\mymess[near start]{Intermediate}{\code{220: text}}{C}
-	\mymess[near start]{S}{\code{book(Price)}}{C}
-	\mymess{C}{\code{quote(Contribution)}}{Intermediate}
+	
+	\begin{sdblock}{Choice}{At \Client}
+		\mymess{C}{\code{ehlo(String)}}{Intermediate}
+		\mymess{Intermediate}{\code{EHLO: text}}{S}
+		
+		\begin{sdblock}{Loop}{Rec Z1}
+			\mymess{C}{\code{data(String)}}{Intermediate}
+			\mymess{Intermediate}{\code{DATA: text}}{S}
+		\end{sdblock}
 
-	\begin{sdblock}{alt}{Choice at \Intermediate}
-		\mymess{Intermediate}{\code{AGREE}}{C}
-		\mymess{Intermediate}{\code{AGREE}}{S}
-		\mymess[near start]{C}{\code{transfer(Money)}}{S}
-		\mymess{Intermediate}{\code{transfer(Money)}}{S}
 
 		\separateline{C}{S}
 
-		\mymess{Intermediate}{\code{QUIT}}{C}
+		\mymess{C}{\code{quit(String)}}{Intermediate}
 		\mymess{Intermediate}{\code{QUIT}}{S}
 	\end{sdblock}
 	 \stepcounter{seqlevel}
 \end{sequencediagram}
+%%
