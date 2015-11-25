@@ -7,46 +7,29 @@ The protocol specifies an interaction between
 an Simple Mail Transfer Protocol (SMTP) client and a \lstinline|gmail| server.
 The protocol is defined using global session types.
 
-\subsection{Bookstore Scenario}
-\label{subsec:description}
+{SMTP} is an internet standard
+electronic mail transfer protocol which typically runs over a TCP
+(Transmission Control Protocol) connection.
+It was first defined in RFC
+821~\cite{SMTP-rfc} and later extended in RFC 5321~\cite{ESMTP-rfc},
+which is the version we consider here.
+%
 
-The communication interaction takes place between two Buyers,
-role \BuyerOne and role \BuyerTwo, and a Seller,
-role \Seller:
-\begin{enumerate}
-	\item
-			\BuyerOne initiates the interaction
-			by choosing and sending a book title to \Seller,
-			and asking for the price of the book.
-
-	\item
-			The \Seller then checks its database and
-			responds to \BuyerOne with a price for the book.
-
-	\item
-			\BuyerOne calculates and
-			sends a contribution quote to
-			\BuyerTwo in order to request to
-			share the expenses for the book.
-
-	\item
-			\BuyerTwo then decides, depending on
-			the contribution, and
-			either agrees to contribute
-			to the buy or not. In both
-			cases it informs both \BuyerOne
-			and the \Seller.
-
-	\item
-			In the former decision \BuyerOne
-			sends its contribution to the \Seller
-			followed by \BuyerTwo sending its
-			contribution to the \Seller.
-%			The \Seller then dispatches the book.
-
-	\item
-			In the latter decision of \BuyerTwo
-			the protocol terminates.
-\end{enumerate}
-			
+An SMTP interaction consists of an exchange of text-based {commands}
+between the client and the server.
+For example, the client sends the
+\lstinline|EHLO| command to identify itself and open the connection with
+the server.
+%
+The commands \lstinline|MAIL FROM| : $<$address$>$ and \lstinline|RCPT TO| : $<$address$>$
+specify the e-mail address of the sender and the
+receiver of the e-mail.
+%
+The \lstinline|DATA| command allows the client to specify the text of
+the e-mail. The \lstinline|QUIT| command is used to terminate the
+session and close the connection. The responses from the server have the
+following format: three digits followed by an optional dash ``-'', such
+as \lstinline|250-|, and then some text, like OK. The server might reply
+to \lstinline|EHLO| with \lstinline|250| $<$text$>$ or to
+\lstinline|MAIL FROM| or \lstinline|RCPT TO| with \lstinline|250| OK.
 
