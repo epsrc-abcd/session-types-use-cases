@@ -1,24 +1,26 @@
+% !TEX root = smtp_main.tex
 \section{Sequence Diagram}
 
 \begin{sequencediagram}
-	\mythread{Buyer1}{\BuyerOne}
-	\mythread[3]{Buyer2}{\BuyerTwo}
-	\mythread[3]{Seller}{\Seller}
+	\mythread{C}{\Client}
+	\mythread[3]{Intermediate}{\Intermediate}
+	\mythread[3]{S}{\Server}
 
-	\mymess[near start]{Buyer1}{\code{book(title)}}{Seller}
-	\mymess[near start]{Seller}{\code{book(Price)}}{Buyer1}
-	\mymess{Buyer1}{\code{quote(Contribution)}}{Buyer2}
+	\mymess[near start]{S}{\code{\_220(String)}}{Intermediate}
+	\mymess[near start]{Intermediate}{\code{220: text}}{C}
+	\mymess[near start]{S}{\code{book(Price)}}{C}
+	\mymess{C}{\code{quote(Contribution)}}{Intermediate}
 
-	\begin{sdblock}{alt}{Choice at \BuyerTwo}
-		\mymess{Buyer2}{\code{AGREE}}{Buyer1}
-		\mymess{Buyer2}{\code{AGREE}}{Seller}
-		\mymess[near start]{Buyer1}{\code{transfer(Money)}}{Seller}
-		\mymess{Buyer2}{\code{transfer(Money)}}{Seller}
+	\begin{sdblock}{alt}{Choice at \Intermediate}
+		\mymess{Intermediate}{\code{AGREE}}{C}
+		\mymess{Intermediate}{\code{AGREE}}{S}
+		\mymess[near start]{C}{\code{transfer(Money)}}{S}
+		\mymess{Intermediate}{\code{transfer(Money)}}{S}
 
-		\separateline{Buyer1}{Seller}
+		\separateline{C}{S}
 
-		\mymess{Buyer2}{\code{QUIT}}{Buyer1}
-		\mymess{Buyer2}{\code{QUIT}}{Seller}
+		\mymess{Intermediate}{\code{QUIT}}{C}
+		\mymess{Intermediate}{\code{QUIT}}{S}
 	\end{sdblock}
 	 \stepcounter{seqlevel}
 \end{sequencediagram}
