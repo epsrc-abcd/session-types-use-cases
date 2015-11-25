@@ -24,7 +24,7 @@ global protocol SMTP(role S, role C) {
          continue X;
       } or {
        _250(String) from S to C;
-       choice at C {
+        choice at C {
          ...
          rec X1 {
            ...
@@ -48,9 +48,15 @@ global protocol SMTP(role S, role C) {
                 } or {
                   atad(String) from C to S;
                   _250(String) from S to C;
-                  continue Z1; } } }
-                  ...
-        }   ...  } } } }
+                  continue Z1; }
+                }
+              }   ...  
+           }  
+           ... 
+        }
+      }
+    }
+  }
  } or  { quit(String) from C to S; }
 }
 \end{lstlisting}
