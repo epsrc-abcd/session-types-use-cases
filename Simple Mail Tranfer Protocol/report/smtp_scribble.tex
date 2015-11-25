@@ -60,28 +60,18 @@ among the messages \lstinline|SUBJECT|, to send the subject,
 \lstinline|DATALINE|, to send a line of text, or \lstinline|ATAD| to terminate the e-mail by sending a dot.
 
 \begin{lstlisting}[numbers=left]
-  local protocol SMTP_C(role S, self C) {
-    _220(String) from S;
-    choice at C{
-      ehlo(String) to S;
+local protocol SMTP_C(role S, self C) {
+  _220(String) from S;
+  choice at C{
+    ehlo(String) to S;
+    ...
+    rec Z1 {  ...
+      data(String) to S;  ...
+      rec Z3 {
+        choice at C { subject(String) to S; continue Z3; }
+        or { dataline(String) to S; continue Z3; }
+        or { atad(String) to S; _250(String) from S; continue Z1; } } }
       ...
-      rec Z1 {
-        ...
-        data(String) to S;
-        ...
-        rec Z3 {
-          choice at C {
-            subject(String) to S;
-            continue Z3;
-          } or {
-            dataline(String) to S;
-            continue Z3;
-          } or {
-            atad(String) to S;
-            _250(String) from S;
-            continue Z1; }}}
-        ...
-    } or {
-      quit(String) to S; }}
+  } or {  quit(String) to S; } }
 \end{lstlisting}
 %
