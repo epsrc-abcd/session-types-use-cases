@@ -1,11 +1,15 @@
-% !TEX root = main.tex
+% !TEX root = smtp_main.tex
+%%
 \section{Scribble Protocol}
+\label{sec: smtp_scribble}
 
 We use Scribble to define the global
 protocol for the SMTP protocol, based
 on Hu's work~\cite{HuR:smtp}.
 
+%%
 \subsection{Global Protocol}
+\label{sec: smtp_global}
 
 %
 \begin{lstlisting}[numbers=left]
@@ -43,69 +47,41 @@ individual communication specifications of each
 of the participant roles.
 
 
-
+%%
 \subsection{Local projection}
+\label{subsec: smtp_local}
+
 The global protocol is used to project the communication
-behaviour of roles $A$ and B.
+behaviour of roles \lstinline|C| and \lstinline|S|.
+We focus on the projection of the client as we are interested in interacting with a real server.
 
+This part of SMTP describes a loop (\lstinline|rec Z1|) where the client chooses
+among the messages \lstinline|SUBJECT|, to send the subject,
+\lstinline|DATALINE|, to send a line of text, or \lstinline|ATAD| to terminate the e-mail by sending a dot.
 
-\begin{lstlisting}[caption={Local Protocol for Role \BuyerOne}]
-local protocol Bookstore at Buyer1(role Buyer1,
-                                   role Buyer2,
-                                   role Seller) {
-  book(title) to Seller;
-  book(price) from Seller;
-  quote(contribution) to Buyer2;
-
-  choice at Buyer2 {
-    agree() fom Buyer2;
-    transfer(money) to Seller;
-  } or {
-    quit() from Buyer2;
-  }
-}
+\begin{lstlisting}[numbers=left]
+  local protocol SMTP_C(role S, self C) {
+    _220(String) from S;
+    choice at C{
+      ehlo(String) to S;
+      ...
+      rec Z1 {
+        ...
+        data(String) to S;
+        ...
+        rec Z3 {
+          choice at C {
+            subject(String) to S;
+            continue Z3;
+          } or {
+            dataline(String) to S;
+            continue Z3;
+          } or {
+            atad(String) to S;
+            _250(String) from S;
+            continue Z1; }}}
+        ...
+    } or {
+      quit(String) to S; }}
 \end{lstlisting}
-
-The above code describes the global protocol from the
-point of view of \BuyerOne. It specifies the
-communication actions that \BuyerOne needs to implement
-in order to respect its part of the global protocol. 
-
-\begin{lstlisting}[caption={Local Protocol for Role \BuyerTwo}]
-local protocol Bookstore at Buyer2(role Buyer1,
-                                   role Buyer2,
-                                   role Seller) {
-  quote(contribution) from Buyer1;
-
-  choice at Buyer2 {
-    agree() to Buyer1, Seller;
-    transfer(money) to Seller;
-  } or {
-    quit() to Buyer1, Seller;
-  }
-}
-\end{lstlisting}
-
-Similarly, the code above describes the global protocol
-from the point of view of role \BuyerTwo. Note that any
-interaction of the global protocol that does not involve
-\BuyerTwo is ommited from the local protocol of \BuyerTwo.
-
-\begin{lstlisting}[caption={Local Protocol for Role \Seller}]
-local protocol Bookstore at Seller(role Buyer1,
-                                   role Buyer2,
-                                   role Seller) {
-  book(title) from Buyer1;
-  book(price) to Buyer1;
-
-  choice at Buyer2 {
-    agree() fom Buyer2;
-    transfer(money) from Buyer1;
-    transfer(money) from Buyer2;
-  } or {
-    quit() from Buyer2;
-  }
-}
-\end{lstlisting}
-
-Finally, the \Seller local protocol is projected as above.
+%
