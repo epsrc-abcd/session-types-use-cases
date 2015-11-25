@@ -1,0 +1,40 @@
+package coherence;
+
+class CoordinateRole typestate CoordinatePr {
+	private SessionSocket a, b, ma, mb;
+
+	CoordinateRole(SessionSocket a, SessionSocket b, SessionSocket ma, SessionSocket mb) {
+		this.a = a;
+		this.b = b;
+		this.ma = ma;
+		this.mb = mb;
+	}
+
+	private void sendChoice(Choice c) {
+		a.send(c);
+		b.send(c);
+		ma.send(c);
+		mb.send(c);
+	}
+
+	public void sendReadAToABMaMb() {
+		sendChoice(new Choice(Choice.READA));
+	}
+
+	public void sendReadBToABMaMb() {
+		sendChoice(new Choice(Choice.READB));
+	}
+
+	public void sendWriteAToABMaMb() {
+		sendChoice(new Choice(Choice.WRITEA));
+	}
+
+	public void sendWriteBToABMaMb() {
+		sendChoice(new Choice(Choice.WRITEB));
+	}
+
+	public void sendEndToABMaMb() {
+		sendChoice(new Choice(Choice.END));
+	}
+
+}

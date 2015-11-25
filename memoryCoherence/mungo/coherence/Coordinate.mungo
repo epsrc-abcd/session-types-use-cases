@@ -1,0 +1,44 @@
+package coherence;
+
+import java.net.ServerSocket;
+import java.io.IOException;
+
+class Coordinate {
+	private SessionSocket a, b, ma, mb;
+
+	Coordinate(int portA, int portB, int portMa, int portMb) {
+		try {
+			ServerSocket listenerA = new ServerSocket(portA);
+			ServerSocket listenerB = new ServerSocket(portB);
+			ServerSocket listenerMa = new ServerSocket(portMa);
+			ServerSocket listenerMb = new ServerSocket(portMb);
+
+			a = new SessionSocket(listenerA.accept());
+			b = new SessionSocket(listenerB.accept());
+			ma = new SessionSocket(listenerMa.accept());
+			mb = new SessionSocket(listenerMb.accept());
+
+
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
+	}
+
+	public void init() {
+		CoordinateRole c = new CoordinateRole(a, b, ma, mb);
+
+		c.sendReadBToABMaMb();
+		c.sendWriteAToABMaMb();
+		c.sendReadBToABMaMb();
+
+		c.sendEndToABMaMb();
+	}
+
+	public static void main(String[] args) {
+		Coordinate c = new Coordinate(6000, 6001, 6002, 6003);
+		c.init();
+	}
+
+}

@@ -1,0 +1,13 @@
+package coherence;
+
+class Word implements java.io.Serializable {
+	private final int d;
+
+	Word(int d) {
+		this.d = d;
+	}
+
+	int get() {
+		return d;
+	}
+}

@@ -1,0 +1,107 @@
+package coherence;
+
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.io.IOException;
+
+class Ma implements Runnable {
+	private SessionSocket c, mb;
+	private final SharedSocket a;
+
+	Ma(int portC, int portMb, SharedSocket a) {
+		try {
+			ServerSocket listener = new ServerSocket(portMb);
+//			System.out.println("listening for mb");
+			mb = new SessionSocket(listener.accept());
+//			System.out.println("Accept ma -> mb");
+
+			c = new SessionSocket(new Socket("localhost", portC));
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
+
+		this.a = a;
+	}
+
+	public void run() {
+		MaRole ma = new MaRole(a, c, mb);
+
+		Word w = new Word(0);
+
+		ValidAValidB:
+		do {
+			switch(ma.receiveChoiceFromCoordinate().getEnum()) {
+				case Choice.READA:
+					ma.sendWordToA(w);
+					continue ValidAValidB;
+				case Choice.READB:
+					continue ValidAValidB;
+				case Choice.WRITEA:
+					w = ma.receiveWordFromA();
+					break;
+				case Choice.WRITEB:
+					InvalidAValidB:
+					do {
+						switch(ma.receiveChoiceFromCoordinate().getEnum()) {
+							case Choice.READA:
+								w = ma.receiveWordFromMb();
+								ma.sendWordToA(w);
+								continue ValidAValidB;
+							case Choice.READB:
+								continue InvalidAValidB;
+							case Choice.WRITEA:
+								w = ma.receiveWordFromA();
+								break InvalidAValidB;
+							case Choice.WRITEB:
+								continue InvalidAValidB;
+							case Choice.END:
+								break ValidAValidB;
+						}
+					} while(true);
+					break;
+				case Choice.END:
+					break ValidAValidB;
+			}
+
+			ValidAInvalidB:
+			do {
+				switch(ma.receiveChoiceFromCoordinate().getEnum()) {
+					case Choice.READA:
+						ma.sendWordToA(w);
+						continue ValidAInvalidB;
+					case Choice.READB:
+						ma.sendWordToMb(w);
+						continue ValidAValidB;
+					case Choice.WRITEA:
+						w = ma.receiveWordFromA();
+						continue ValidAInvalidB;
+					case Choice.WRITEB:
+					InvalidAValidB:
+						do {
+							switch(ma.receiveChoiceFromCoordinate().getEnum()) {
+								case Choice.READA:
+									w = ma.receiveWordFromMb();
+									ma.sendWordToA(w);
+									continue ValidAValidB;
+								case Choice.READB:
+									continue InvalidAValidB;
+								case Choice.WRITEA:
+									w = ma.receiveWordFromA();
+									continue ValidAInvalidB;
+								case Choice.WRITEB:
+									continue InvalidAValidB;
+								case Choice.END:
+									break ValidAValidB;
+							}
+						} while(true);
+					case Choice.END:
+						break ValidAValidB;
+				}
+			} while(true);
+		} while(true);
+
+		System.out.println("A cell: " + w.get());
+	}
+}

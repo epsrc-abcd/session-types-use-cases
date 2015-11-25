@@ -1,0 +1,18 @@
+package coherence;
+
+class SharedSocket {
+	private final CircularBuffer s, r;
+
+	SharedSocket(CircularBuffer s, CircularBuffer r) {
+		this.s = s;
+		this.r = r;
+	}
+
+	void send(Object o) {
+		s.send(o);
+	}
+
+	Object receive() {
+		return r.receive();
+	}
+}

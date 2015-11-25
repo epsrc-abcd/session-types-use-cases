@@ -1,0 +1,59 @@
+package coherence;
+
+typestate MbPr {
+	ValidAValidB	=	{
+							Choice receiveChoiceFromCoordinate() :
+							<
+								READA:	ValidAValidB,
+								READB:	Read,
+								WRITEA:	ValidAInvalidB,
+								WRITEB:	Write,
+								END:	end
+							>
+						}
+
+
+	Read			=	{
+							void sendWordToB(Word): ValidAValidB
+						}
+
+	Write			=	{
+							Word receiveWordFromB(): InvalidAValidB
+						}
+
+
+	ValidAInvalidB	=	{
+							Choice receiveChoiceFromCoordinate() :
+							<
+								READA:	ValidAInvalidB,
+								READB:	InvalidBRead,
+								WRITEA:	ValidAInvalidB,
+								WRITEB:	Write,
+								END:	end
+							>
+						}
+
+
+	InvalidBRead	=	{
+							Word receiveWordFromMa(): Read
+						}
+
+	InvalidAValidB	=	{
+							Choice receiveChoiceFromCoordinate() :
+							<
+								READA:	InvalidARead,
+								READB:	ReadBInvalidA,
+								WRITEA:	ValidAInvalidB,
+								WRITEB:	Write,
+								END:	end
+							>
+						}
+
+	ReadBInvalidA	=	{
+							void sendWordToB(Word): InvalidAValidB
+						}
+
+	InvalidARead	=	{
+							void sendWordToMa(Word): ValidAValidB
+						}
+}

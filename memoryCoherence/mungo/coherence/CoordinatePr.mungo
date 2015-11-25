@@ -1,0 +1,11 @@
+package coherence;
+
+typestate CoordinatePr {
+	Coordinate	=	{
+						void sendReadAToABMaMb() : Coordinate,
+						void sendReadBToABMaMb() : Coordinate,
+						void sendWriteAToABMaMb() : Coordinate,
+						void sendWriteBToABMaMb() : Coordinate,
+						void sendEndToABMaMb() : end
+					}
+}

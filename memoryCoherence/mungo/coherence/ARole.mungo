@@ -1,0 +1,24 @@
+package coherence;
+
+class ARole typestate APr {
+	private final SharedSocket ma;
+	private final SessionSocket c;
+
+	ARole(SharedSocket ma, SessionSocket c) {
+		this.ma = ma;
+		this.c = c;
+	}
+
+	Choice receiveChoiceFromCoordinate() {
+		return (Choice) c.receiveObject();
+	}
+
+	Word receiveWordFromMa() {
+		return (Word) ma.receive();
+	}
+
+	void sendWordToMa(Word w) {
+		ma.send(w);
+	}
+	
+}

@@ -1,0 +1,19 @@
+package coherence;
+
+class Shared {
+	private CircularBuffer b1, b2;
+
+	Shared() {
+		b1 = new CircularBuffer();
+		b2 = new CircularBuffer();		
+	}
+
+	SharedSocket server() {
+		return new SharedSocket(b1, b2);
+	}
+
+	SharedSocket client() {
+		return new SharedSocket(b2, b1);
+	}
+}
+

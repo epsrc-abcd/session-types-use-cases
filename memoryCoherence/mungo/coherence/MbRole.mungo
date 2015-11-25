@@ -1,0 +1,35 @@
+package coherence;
+
+class MbRole typestate MbPr {
+	private final SharedSocket b;
+	private final SessionSocket c, ma;
+
+	MbRole(SharedSocket b, SessionSocket c, SessionSocket ma) {
+		this.b = b;
+		this.c = c;
+		this.ma = ma;
+	}
+
+
+	Choice receiveChoiceFromCoordinate() {
+		return (Choice) c.receiveObject();
+	}
+
+	Word receiveWordFromMa() {
+		return (Word) ma.receiveObject();
+	}
+
+
+	void sendWordToMa(Word w) {
+		ma.send(w);
+	}
+
+	void sendWordToB(Word w) {
+		b.send(w);
+	}
+
+	Word receiveWordFromB() {
+		return (Word) b.receive();
+	}
+
+}

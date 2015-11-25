@@ -1,0 +1,58 @@
+package coherence;
+
+class CircularBuffer {
+	private static final int default_offset = 3;
+	private final Object[] buffer;
+	private int offset;
+	private final int size;
+
+	private volatile int head;
+	private volatile int tail;
+
+	CircularBuffer() {
+		this(default_offset);
+	}
+
+	CircularBuffer(int offset) {
+		if(offset > 16)
+			offset = default_offset;
+
+		head = tail = 0;
+		offset = offset;
+		size = 1 << offset;
+		buffer = new Object[size];
+	}
+
+	void send(Object o) {
+		while(((head + 1) % size) == tail);
+		buffer[head] = o;
+		head = (head + 1) % size;
+	}
+
+	void send(int i) {
+		send(new Integer(i));
+	}
+
+	void send(long i) {
+		send(new Long(i));
+	}
+
+	Object receive() {
+		while(tail == head);
+		Object o = buffer[tail];
+		tail = (tail + 1) % size;
+		return o;
+	}
+
+	int receiveInt() {
+		return ((Integer) receive()).intValue();
+	}
+
+	long receiveLong() {
+		return ((Long) receive()).longValue();
+	}
+
+	String receiveString() {
+		return (String) receive();
+	}
+}

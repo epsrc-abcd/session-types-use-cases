@@ -1,0 +1,106 @@
+package coherence;
+
+import java.net.Socket;
+import java.io.IOException;
+
+class A implements Runnable {
+	private SessionSocket c;
+	private final SharedSocket ma;
+
+	A(int portC, SharedSocket ma) {
+		try {
+			c = new SessionSocket(new Socket("localhost", portC));
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
+
+		this.ma = ma;
+	}
+
+	public void run() {
+		ARole a = new ARole(ma, c);
+
+		ValidAValidB:
+		do {
+			switch(a.receiveChoiceFromCoordinate().getEnum()) {
+				case Choice.READA:
+					a.receiveWordFromMa();
+					continue ValidAValidB;
+				case Choice.READB:
+					continue ValidAValidB;
+				case Choice.WRITEA:
+					a.sendWordToMa(new Word(5));
+					break;
+				case Choice.WRITEB:
+					InvalidAValidB:
+					do {
+						switch(a.receiveChoiceFromCoordinate().getEnum()) {
+							case Choice.READA:
+								a.receiveWordFromMa();
+								continue ValidAValidB;
+							case Choice.READB:
+								continue InvalidAValidB;
+							case Choice.WRITEA:
+								a.sendWordToMa(new Word(6));
+								break InvalidAValidB;
+							case Choice.WRITEB:
+								continue InvalidAValidB;
+							case Choice.END:
+								break ValidAValidB;
+						}
+					} while(true);
+					break;
+				case Choice.END:
+					break ValidAValidB;
+			}
+
+			ValidAInvalidB:
+			do {
+				switch(a.receiveChoiceFromCoordinate().getEnum()) {
+					case Choice.READA:
+						a.receiveWordFromMa();
+						continue ValidAInvalidB;
+					case Choice.READB:
+						continue ValidAValidB;
+					case Choice.WRITEA:
+						a.sendWordToMa(new Word(7));
+						continue ValidAInvalidB;
+					case Choice.WRITEB:
+						InvalidAValidB:
+						do {
+							switch(a.receiveChoiceFromCoordinate().getEnum()) {
+								case Choice.READA:
+									a.receiveWordFromMa();
+									continue ValidAValidB;
+								case Choice.READB:
+									continue InvalidAValidB;
+								case Choice.WRITEA:
+									a.sendWordToMa(new Word(6));
+									continue ValidAInvalidB;
+								case Choice.WRITEB:
+									continue InvalidAValidB;
+								case Choice.END:
+									break ValidAValidB;
+							}
+						} while(true);
+					case Choice.END:
+						break ValidAValidB;
+				}
+			} while(true);
+		} while(true);
+	}
+
+
+	public static void main(String[] args) {
+		Shared s = new Shared();
+
+		A a = new A(6000, s.server());
+		Ma ma = new Ma(6002, 3000, s.client());
+
+
+		new Thread(a).start();
+		new Thread(ma).start();
+	}
+}

@@ -1,0 +1,106 @@
+package coherence;
+
+import java.net.Socket;
+import java.io.IOException;
+
+class B implements Runnable {
+	private SessionSocket c;
+	private final SharedSocket mb;
+
+	B(int portC, SharedSocket mb) {
+		try {
+			c = new SessionSocket(new Socket("localhost", portC));
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
+
+		this.mb = mb;
+	}
+
+	public void run() {
+		BRole b = new BRole(mb, c);
+
+		ValidAValidB:
+		do {
+			switch(b.receiveChoiceFromCoordinate().getEnum()) {
+				case Choice.READA:
+					continue ValidAValidB;
+				case Choice.READB:
+					b.receiveWordFromMb();
+					continue ValidAValidB;
+				case Choice.WRITEA:
+					ValidAInvalidB:
+					do {
+						switch(b.receiveChoiceFromCoordinate().getEnum()) {
+							case Choice.READA:
+								continue ValidAInvalidB;
+							case Choice.READB:
+								b.receiveWordFromMb();
+								continue ValidAValidB;
+							case Choice.WRITEA:
+								continue ValidAInvalidB;
+							case Choice.WRITEB:
+								b.sendWordToMb(new Word(16));
+								break ValidAInvalidB;
+							case Choice.END:
+								break ValidAValidB;
+						}
+					} while(true);
+					break;
+				case Choice.WRITEB:
+					b.sendWordToMb(new Word(15));
+					break;
+				case Choice.END:
+					break ValidAValidB;
+			}
+
+			InvalidAValidB:
+			do {
+				switch(b.receiveChoiceFromCoordinate().getEnum()) {
+					case Choice.READA:
+						continue ValidAValidB;
+					case Choice.READB:
+						b.receiveWordFromMb();
+						continue InvalidAValidB;
+					case Choice.WRITEA:
+						ValidAInvalidB:
+						do {
+							switch(b.receiveChoiceFromCoordinate().getEnum()) {
+								case Choice.READA:
+									continue ValidAInvalidB;
+								case Choice.READB:
+									b.receiveWordFromMb();
+									continue ValidAValidB;
+								case Choice.WRITEA:
+									continue ValidAInvalidB;
+								case Choice.WRITEB:
+									b.sendWordToMb(new Word(16));
+									continue InvalidAValidB;
+								case Choice.END:
+									break ValidAValidB;
+							}
+						} while(true);
+					case Choice.WRITEB:
+						b.sendWordToMb(new Word(17));
+						continue InvalidAValidB;
+					case Choice.END:
+						break ValidAValidB;
+				}
+			} while(true);
+		} while(true);
+	}
+
+
+	public static void main(String[] args) {
+		Shared s = new Shared();
+
+		B b = new B(6001, s.server());
+		Mb mb = new Mb(6003, 3000, s.client());
+
+
+		new Thread(b).start();
+		new Thread(mb).start();
+	}
+}

@@ -1,0 +1,24 @@
+package coherence;
+
+class BRole typestate BPr {
+	private final SharedSocket mb;
+	private final SessionSocket c;
+
+	BRole(SharedSocket mb, SessionSocket c) {
+		this.mb = mb;
+		this.c = c;
+	}
+
+	Choice receiveChoiceFromCoordinate() {
+		return (Choice) c.receiveObject();
+	}
+
+	Word receiveWordFromMb() {
+		return (Word) mb.receive();
+	}
+
+	void sendWordToMb(Word w) {
+		mb.send(w);
+	}
+	
+}

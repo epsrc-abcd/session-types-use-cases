@@ -1,0 +1,5 @@
+package coherence;
+
+enum Choice implements java.io.Serializable {
+	READA, READB, WRITEA, WRITEB, END;
+}

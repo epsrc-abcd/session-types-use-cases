@@ -1,0 +1,35 @@
+package coherence;
+
+class MaRole typestate MaPr {
+	private final SharedSocket a;
+	private final SessionSocket c, mb;
+
+	MaRole(SharedSocket a, SessionSocket c, SessionSocket mb) {
+		this.a = a;
+		this.c = c;
+		this.mb = mb;
+	}
+
+
+	Choice receiveChoiceFromCoordinate() {
+		return (Choice) c.receiveObject();
+	}
+
+	Word receiveWordFromMb() {
+		return (Word) mb.receiveObject();
+	}
+
+
+	void sendWordToMb(Word w) {
+		mb.send(w);
+	}
+
+	void sendWordToA(Word w) {
+		a.send(w);
+	}
+
+	Word receiveWordFromA() {
+		return (Word) a.receive();
+	}
+
+}

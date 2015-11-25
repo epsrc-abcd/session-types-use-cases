@@ -1,0 +1,119 @@
+package coherence;
+
+import java.net.Socket;
+import java.io.IOException;
+
+class Mb implements Runnable {
+	private SessionSocket c, ma;
+	private final SharedSocket b;
+
+	Mb(int portC, int portMa, SharedSocket b) {
+		try {
+			ma = new SessionSocket(new Socket("localhost", portMa));
+			c = new SessionSocket(new Socket("localhost", portC));
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
+
+		this.b = b;
+	}
+
+	public void run() {
+		MbRole mb = new MbRole(b, c, ma);
+
+		Word w = new Word(0);
+
+		ValidAValidB:
+		do {
+			switch(mb.receiveChoiceFromCoordinate().getEnum()) {
+				case Choice.READA:
+					continue ValidAValidB;
+
+				case Choice.READB:
+					mb.sendWordToB(w);
+					continue ValidAValidB;
+
+				case Choice.WRITEA:
+					ValidAInvalidB:
+					do {
+						switch(mb.receiveChoiceFromCoordinate().getEnum()) {
+							case Choice.READA:
+								continue ValidAInvalidB;
+
+							case Choice.READB:
+								w = mb.receiveWordFromMa();
+								mb.sendWordToB(w);
+								continue ValidAValidB;
+
+							case Choice.WRITEA:
+								continue ValidAInvalidB;
+
+							case Choice.WRITEB:
+								w = mb.receiveWordFromB();
+								break ValidAInvalidB;
+
+							case Choice.END:
+								break ValidAValidB;
+						}
+					} while(true);
+					break;
+
+				case Choice.WRITEB:
+					w = mb.receiveWordFromB();
+					break;
+
+				case Choice.END:
+					break ValidAValidB;
+			}
+
+			InvalidAValidB:
+			do {
+				switch(mb.receiveChoiceFromCoordinate().getEnum()) {
+					case Choice.READA:
+						mb.sendWordToMa(w);
+						continue ValidAValidB;
+
+					case Choice.READB:
+						mb.sendWordToB(w);
+						continue InvalidAValidB;
+
+					case Choice.WRITEA:
+						ValidAInvalidB:
+						do {
+							switch(mb.receiveChoiceFromCoordinate().getEnum()) {
+								case Choice.READA:
+									continue ValidAInvalidB;
+
+								case Choice.READB:
+									w = mb.receiveWordFromMa();
+									mb.sendWordToB(w);
+									continue ValidAValidB;
+
+								case Choice.WRITEA:
+									continue ValidAInvalidB;
+
+								case Choice.WRITEB:
+									w = mb.receiveWordFromB();
+									continue InvalidAValidB;
+
+								case Choice.END:
+									break ValidAValidB;
+							}
+						} while(true);
+
+					case Choice.WRITEB:
+						w = mb.receiveWordFromB();
+						continue InvalidAValidB;
+
+					case Choice.END:
+						break ValidAValidB;
+				}
+			} while(true);
+		} while(true);
+
+		System.out.println("B cell: " + w.get());
+
+	}
+}
