@@ -1,153 +1,107 @@
-\section{Implementation}
+% !TEX root = smtp_main.tex
+\section{Implementation with \StMungo and \Mungo}
+\label{sec: smtp_implementation}
 In this section we describe the implementation
-details of the Bookstore scenario.
+details of the \lstinline|SMTP_C| protocol.
 
-\subsection{\Mungo Implementation}
-
-For the purpose of implementing the Bookstore
+%
+For the purpose of implementing the SMTP
 algorithm in \Mungo,
-we translate the Scribble local protocols for roles
-$A$ and $B$ to \Mungo typestate syntax.
-The translation can be done automatically;
-an automatic translation first derives an
-enumeration type:
+we first translate the Scribble local protocol for the client, namely the \lstinline|SMTP_C| protocol, into \Mungo typestate syntax.
 
-\begin{lstlisting}[caption={Enumeration for the communication choice}]
-enum Choice implements java.io.Serializable {
-  AGREE, QUIT;
+The translation is be done automatically by using the \StMungo tool,
+which produces in addition to the typestate,
+enumeration types for every choice in the \lstinline|SMTP_C| protocol as well as a skelatal API.
+
+Running the StMungo tool on \lstinline|SMTP_C| produces the files
+\lstinline|CProtocol.mungo|,
+\lstinline|CRole.mungo| and \lstinline|CMain.mungo|. The first of these, \lstinline|CProtocol|, captures the local protocol as a typestate definition.
+\begin{lstlisting}[numbers=left]
+typestate CProtocol {
+  State0 = {
+    String receive_220StringFromS(): State1 }
+  State1= {
+    void send_EHLOToS(): State2,
+    void send_QUITToS(): State39 }
+  State2 = {
+    void send_ehloStringToS(String): State3 }
+  ...
+  State29 = {
+    void send_SUBJECTToS() : State30,
+    void send_DATALINEToS(): State31,
+    void send_ATADToS() : State32 }
+  ...
+  State39 = {
+    void send_quitStringToS(String): end }
+}
+\end{lstlisting}
+%%
+The internal choice made at role \lstinline|C| (lines 11-20 of
+\lstinline|SMTP_C|), is translated into a set of send methods,
+one for each branch of the choice (lines 11-13 in
+\lstinline|CProtocol|).
+
+
+In this implementation, since communication occurs on Java sockets,
+we declare and create a new socket to connect to the \lstinline|gmail| server.
+This is given in lines 2 and 5 in \lstinline|CRole|, respectively.
+\begin{lstlisting}[numbers=left]
+public class CRole typestate CProtocol {
+  private Socket socketS = null;
+  ...
+  public CRole() {
+    socketS = new Socket("smtp.gmail.com", 587);
+    ...
+  }
+   /* CProtocol  method definitions */
 }
 \end{lstlisting}
 
-The enumeration represents the
-labels used by the Scribble protocol
-to perform choice between roles. In this
-case we have labels \lstinline|AGREE| and
-\lstinline|QUIT| that correspond to the choices
-made by role \BuyerTwo.
+There is a close correspondence between the text-based commands in SMTP
+and the method calls in \Mungo, described as follows.
+Consider the command
+``\lstinline|SUBJECT: Hello World|'', which is an atomic command
+starting with the keyword \lstinline|SUBJECT| and followed by the
+subject line, in this case ``Hello World''.
 
-The local projection of role \BuyerOne is automatically translated to typestate:
+%
+\StMungo and \Mungo framework use an intermediate layer to split the above command into
+two separate method calls, as shown in lines 8-10 in \lstinline|CMain|.
+The first method being \lstinline|send_SUBJECTToS()|, selects the command \lstinline|SUBJECT|.
+The second method being
+\lstinline|send|$\_$\lstinline|subjectStringToS(``Hello World'')|, completes and sends the message
+``\lstinline|SUBJECT: Hello World|''.
+The intermediate layer is also used when receiving a command from the server,
+by splitting it into a choice and the corresponding text.
 
-\begin{lstlisting}[caption={Typestate for Role \BuyerOne}]
-typestate Buyer1Protocol {
-  State0 = {
-    void send_bookToSeller(Title): State1
+Finally, \lstinline|CMain.mungo| contains the \lstinline|main| method
+where the \lstinline|CRole| object is created and used to implement the
+client logic.
+\begin{lstlisting}[numbers=left]
+public static void main(String[] args) {
+  CRole currentC =  new CRole();
+  ...
+  _Z3: do{
+    ...
+    switch(/*label to be sent*/) {
+      case /*SUBJECT*/:
+        currentC.send_SUBJECTToS();
+        String subject = // input subject;
+        currentC.send_subjectStringToS(/*subject*/);
+        continue _Z3;
+      case /*DATALINE*/
+      case /*ATAD*/:
+        currentC.send_ATADToS();
+        currentC.send_atadStringToS(/*single dot*/);
+        String _250msg = currentC.receive_250StringFromS();
+        continue _Z1;
+    }
   }
-
-  State1 = {
-    Price receive_bookFromSeller(): State2
-  }
-
-  State2 = {
-    void send_quoteToBuyer2(Contribution): State3
-  }
-
-  State3 = {
-    Choice receive_ChoiceFromBuyer2(): <AGREE: State4, QUIT: end>
-  }
-
-  State4 = {
-    void send_transferToSeller(Money): end
-  }
+  while(true);
 }
 \end{lstlisting}
-
-The initial state is \lstinline|State0| where
-role \BuyerOne uses method \lstinline|void send_bookToSeller(title)|
-to send a book title to \Seller
-and proceed to \lstinline|State1|. In \lstinline|State1|
-\BuyerOne receives a price from the \Seller for the book via
-the invocation of method \lstinline|Price receive_bookFromSeller()|
-and proceeds to \lstinline|State2|, where
-it calls method \lstinline|void send_quoteToBuyer2(Contribution)|
-to inform \BuyerTwo about a  possible contribution. The latter
-action results in \lstinline|State3|.
-In \lstinline|State3| \BuyerOne calls method
-\lstinline|Choice receive_ChoiceFromBuyer2()| and awaits
-for a choice from \BuyerTwo; the choice \lstinline|AGREE|
-proceeds the protocol to \lstinline|State4| and
-choice \lstinline|QUIT| ends the protocol. Finally,
-in \lstinline|State4| \BuyerOne uses method
-\lstinline|void send_transferToSeller(Money)| to
-send transfer money to the \Seller.
-
-
-The local projection of role \BuyerTwo is automatically translated to typestate:
-
-\begin{lstlisting}[caption={Typestate for Role \BuyerTwo}]
-typestate BuyerTwoProtocol{
-  State0 = {
-    Contribution receive_quoteFromBuyer1(): State1
-
-  State1 = {
-    void send_AGREEToBuyer1: State2,
-    void send_QUITToBuyer1: State4
-  }
-
-  State2 = {
-    void send_AGREEToSeller: State3
-  }
-
-  State3 = {
-    void send_transferToSeller(Money): end
-  }
-
-  State4 = {
-    void send_QUITToSeller(): end
-  }
-}
-\end{lstlisting}
-
-
-\begin{lstlisting}[caption={Typestate for Role \Seller}]
-  State0 = {
-    Title receive_bookFromBuyer1(): State1
-  }
-
-  State1 = {
-    void send_bookToBuyer1(Price): State2
-  }
-
-  State2 = {
-    Choice receive_ChoiceFromBuyer2(): <AGREE: State3, QUIT: end>
-  }
-
-  State3 = {
-    Money receive_transferFromBuyer1(): State4
-  }
-
-  State4 = {
-    Money receive_transferFromBuyer2(): end
-  }
-\end{lstlisting}
-
-\subsubsection{Implementation in \Mungo}
-
-We have implemented two versions of the Bookstore scenario in
-\Mungo, based on the underline communication layer. The first
-version implements a socket interface on top of a shared
-memory structure. The second versions uses the Java socket
-interface from the \code{Java.net.*} package.
-
-The shared memory implementation is used for demonstration purposes
-does not implement concurrent components; roles \BuyerOne,
-\BuyerTwo and \Seller are instantiated as objects in a single
-method in the \code{Main.java} file and they are interacting
-in a sequential discipline.
-
-The socket implementation is a concurrent implementation and
-requires running three different JVM processes to instatiate
-the roles \BuyerOne, \BuyerTwo, and \Seller. The \Seller role
-acts as the server side for both the sockets of
-\BuyerOne, and \BuyerTwo. Similarly, \BuyerTwo acts as the server
-for the socket connection between \BuyerOne and \BuyerTwo.
-Classes \code{Buyer1Main.java}, \code{Buyer2Main.java}, and
-\code{SellerMain.java} implement the communication interaction
-of the three roles, respectively, as it is described by the
-typestate protocol of each role.
-
-
-
-
-
-
-
+%%
+The \lstinline|CMain| file should be thought of as a skeleton or a
+template for the user, who is then able to customise it, for example by
+adding SSL connection code for authentication with the \lstinline|gmail|
+server.
