@@ -24,10 +24,10 @@ with recursive variable \lstinline|Fib|.
 Inside the recursion role \A decides whether to send
 a \lstinline|long| integer (Java primitive data-type)
 to role \B or send an \lstinline|stop| to role \B.
-In the former case role's \A message will be followed
+In the former case role \A's message will be followed
 by role \B sending a \lstinline|long| integer. The protocol
 then performs a recursion on the recursive variable.
-In role's \A latter choice the protocol terminates.
+In role \A's latter choice the protocol terminates.
 
 \paragraph{Local projection}
 The global protocol is used to project the communication
@@ -47,8 +47,8 @@ local protocol Fibonacci at A(role A, role B) {
 }
 \end{lstlisting}
 
-The code above describes the global protocol from role's \A
-point of view. It give the exact communication actions that
+The code above describes the global protocol from role \A's
+point of view. It gives the exact communication actions that
 role \A needs to do in order to respect the global protocol.
 
 \begin{lstlisting}[caption={Local Protocol for Role \B}]

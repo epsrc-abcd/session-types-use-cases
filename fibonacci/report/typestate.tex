@@ -21,7 +21,7 @@ enum Choice implements java.io.Serializable {
 
 The enumeration represents the
 labels used by the Scribble protocol
-to perform choice between roles. In this
+to make a choice at a role. In this
 case we have labels \lstinline|FIBONACCI| and
 \lstinline|STOP| that correspond to the choices
 made by role \A.
@@ -46,7 +46,7 @@ typestate AFibonacci {
 \end{lstlisting}
 
 The initial state is \lstinline|State0| where
-role \A chooses whether to send call method
+role \A chooses whether to invoke method
 \lstinline|void send_fibonacciToB()| that
 will send enumeration label \lstinline|FIBONACCI| to role \B
 and then proceed to \lstinline|State1|. The other
