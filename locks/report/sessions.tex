@@ -24,7 +24,7 @@
 \section{Session type Implementation}
 \label{sec:scribble}
 
-We use the selector construct~\cite{citation_needed}
+We use the selector construct~\cite{KouzapasYHH13}
 to describe a lock process that registers two processes that
 want to acquire the lock.
 
@@ -40,8 +40,23 @@ with
   S = \mu X. !\langle \lock \rangle; ?(\unlock); X
 \]
 
+The \Lock process describes a lock semantics where two
+processes compete in acquiring the lock structure.
 
-We then define processes $A$ and $B$ that interact with the lock 
+\begin{enumerate}
+	\item	Process \Lock creates a new selector.
+	\item	It then register two session channels, subsequently acquired by shared name $a$.
+	\item	The selector, enters a loop where
+	\item	it selects a session that has a message ready to be received.
+	\item	The session is expected to carry a \lock message.
+	\item	After receiving the message, \Lock process waits until an \unlock message is received.
+	\item	It then registers the session back to the selector and
+	\item	continues the loop.
+\end{enumerate}
+
+
+We then define processes $A$ and $B$ that interact with the lock:
+%
 \begin{eqnarray*}
 	A &=& \out{a}{s_1} \out{s_1}{\lock} \dots \mathsf{critical\ section} \dots \out{s_1}{\unlock} \\
 	B &=& \out{a}{s_2} \out{s_2}{\lock} \dots \mathsf{critical\ section} \dots \out{s_2}{\unlock} \\
@@ -51,3 +66,4 @@ The whole system would be
 \[
 	\Lock \Par A \Par B \Par \shqueue{a}{\es}
 \]
+
