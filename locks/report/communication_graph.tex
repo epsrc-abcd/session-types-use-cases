@@ -1,0 +1,19 @@
+\section{Communication Graph}
+
+In this section we draw the global communication
+graph for the \code{Fibonacci} global protocol.
+
+\begin{statemachine}[node distance = 6cm]
+	\node[state,initial]				(S0)					{\lstinline|State0|};
+	\node[state, node distance = 3cm]	(S1)[below of=S0]	{\lstinline|State1|};
+	\node[state]						(S2)[right of=S1]		{\lstinline|State2|};
+	\node[state, accepting]				(End)[right of=S0]		{\lstinline|END|};
+
+	\path	(S0)	edge			node[left]	{\lstinline|FIBONACCI() from A to B|}		(S1)
+					edge			node		{\lstinline|END() from A to B|}				(End)
+			(S1)	edge			node		{\lstinline|fibonacci(long) from A to B|}	(S2)
+			(S2)	edge			node[right]	{\lstinline|fibonacci(long) from B to A|}	(S0);
+
+\end{statemachine}
+
+

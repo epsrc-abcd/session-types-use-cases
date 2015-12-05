@@ -1,0 +1,45 @@
+\section{Sequence Diagram}
+
+In this section we present the sequence diagram that
+corresponds to the global protocol described in
+\secref{sec:scribble}.
+
+\begin{figure}[H]
+\begin{sequencediagram}
+	\mythread{RoleA}{Role A}
+	\mythread[4]{RoleB}{Role B}
+
+%	\begin{sdblock}{Communication protocol}{}
+		\begin{sdblock}{Loop}{}
+			\mymess{RoleA}{\code{FIBONACCI}}{RoleB}
+			\mymess{RoleA}{\code{fibonacci(long)}}{RoleB}
+			\mymess{RoleB}{\code{fibonacci(long)}}{RoleA}
+		\end{sdblock}
+
+%		\separateline{RoleA}{RoleB}
+
+		\begin{messcall}{RoleA}{\code{STOP}}{RoleB}
+		\end{messcall}
+%	\end{sdblock}
+\end{sequencediagram}
+\caption{Sequence Diagram: Concurrent Fibonacci}
+\end{figure}
+
+The sequence diagram involves the communication between threads:
+Role \A and Role \B. There are no object invocations since
+the global communication abstraction is intended to describe
+communication and not any other functionality.
+The recursion defined in the global protocol is abstracted
+in sequence diagram semantics using a {\em loop} block, that
+describes the loop around the number passing between role
+\A and role \B. There is no condition on the loop since
+the global protocol defines that the condition happens
+internally on role \A.
+
+\paragraph{Criticism}
+It seems that there is an
+the inability on the above sequence diagram to clearly
+show the choice on role \A that decides whether the protocol
+would loop on choice \code{FIBONACCI} or stop the loop on
+choice \code{STOP}.
+

@@ -1,0 +1,151 @@
+\section{Typestate and \Mungo implementation}
+In this section we present the typestate specification
+and we describe the implementation of the Fibonacci
+algorithm in the \Mungo framework.
+
+\subsection{Typestate for \Mungo}
+\label{sec:typestate}
+The concurrent Fibonacci algorithm is implemented in \Mungo.
+For the purpose of this implemention,
+we translate the Scribble local protocols for roles
+\A and \B to \Mungo typestate syntax.
+The translation can be done automatically;
+an automatic translation first derives an
+enumeration type:
+
+\begin{lstlisting}[caption={Enumeration for the communication choice}]
+enum Choice implements java.io.Serializable {
+  FIBONACCI, STOP;
+}
+\end{lstlisting}
+
+The enumeration represents the
+labels used by the Scribble protocol
+to make a choice at a role. In this
+case we have labels \lstinline|FIBONACCI| and
+\lstinline|STOP| that correspond to the choices
+made by role \A.
+
+The local projection of role \A is automatically translated to typestate:
+
+\begin{lstlisting}[caption={Typestate for Role \A}]
+typestate AFibonacci {
+  State0 = {
+    void send_fibonacciToB() : State1,
+    void send_stopToB() : end,
+   }
+
+  State1 = {
+    void send_longToB(long): State2
+  }
+
+  State2 = {
+    int receive_longFromB(): State0
+  }
+}
+\end{lstlisting}
+
+The initial state is \lstinline|State0| where
+role \A chooses whether to invoke method
+\lstinline|void send_fibonacciToB()| that
+will send enumeration label \lstinline|FIBONACCI| to role \B
+and then proceed to \lstinline|State1|. The other
+choice for role \A is to invoke method
+\lstinline|void send_stopToB()| that sends
+enumeration label \lstinline|END| to role \B
+and then ends the protocol.
+\lstinline|State1| requires that role \A invokes
+method \lstinline|void send_longToB(long)| that
+is used to send a \lstinline|long| integer to role
+\B and then proceed to \lstinline|State2|. In 
+\lstinline|State2| role \A should invoke method
+\lstinline|long receive_longFromB()| that will
+receive a \lstinline|long| integer from role \B.
+The protocol then continues in \lstinline|State0|.
+
+
+The local projection of role \B is automatically translated to typestate:
+
+\begin{lstlisting}[caption={Typestate for Role \B}]
+typestate BFibonacci {
+  State0 = {
+    void receive_ChoiceFromA() : <FIBONACCI: State1, STOP: end>
+  }
+
+  State1 = {
+    int receive_intFromA(): State2
+  }
+
+  State2 = {
+    void send_intToA(int): State0
+  }
+}
+\end{lstlisting}
+
+The typestate for role \B starts with \lstinline|State0|
+that performs an external choice on method
+\lstinline|void receive_ChoiceFromA()| that will receive
+one of the enumeration labels of the \lstinline|Choice|
+if the label received is \lstinline|FIBONACCI| the state
+will proceed to \lstinline|State1| or if the label
+received is \lstinline|STOP| the protocol will terminate.
+States \lstinline|State1| and \lstinline|State2| perform
+a dual communication pattern than the respective states
+in the typestate of role \A.
+
+
+\subsection{\Mungo Implementation}
+
+Each of the two typestates, \lstinline|AFibonacci| and
+\lstinline|BFibonacci| are implemented by classes
+\lstinline|ARole| and \lstinline|BRole| respectively.
+The constructors of the two classes synchronise
+on an object with a socket interface (class \lstinline|ARole|
+is the server side) and initialise their private socket
+field.
+The two classes implement
+the methods defined their respective protocols. The
+method implementations perform send and receive actions
+over their socket field. The two classes are then
+used by classes \lstinline|A| and \lstinline|B|, respectively.
+Classes \lstinline|A| and \lstinline|B| implement the \lstinline|Runnable|
+interface so they can be instantiated inside a thread object.
+Each class creates a new \lstinline|ARole| (\lstinline|BRole|, respectively)
+object and it is forced to use it as specified by its typestate
+protocol.
+Two objects of the classes \lstinline|A| and \lstinline|B| are
+then run into separate threads that coordinate and execute the
+Fibonacci algorithm.
+
+\begin{comment}
+We could refine the automated code to be more readable:
+\begin{lstlisting}
+typestate AFibonacci {
+  Fibonacci = {
+    void send_fibonacciToB() : PingPong,
+    void send_stopToB() : end,
+  }
+
+  PingPong	=	{
+    void send_intToB(int): { 
+      int receive_intFromB(): Fibonacci
+    }
+  }
+}
+\end{lstlisting}
+
+\begin{lstlisting}
+typestate BFibonacci {
+  Fibonacci = {
+    void receive_ChoiceFromA() : <FIBONACCI: PingPong, STOP: end>
+  }
+
+  PingPong = {
+    int receive_intFromA(): {
+      void send_intToA(int): State0
+    }
+  }
+}
+\end{lstlisting}
+\end{comment}
+

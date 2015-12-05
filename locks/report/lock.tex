@@ -1,0 +1,89 @@
+\section{Description}
+
+In this report we describe a session type implementation
+of a {\em lock}. A lock is basic construct in concurrent
+programming.
+They are typicaly used 
+to control and co-ordinate the asynchronous and reactive
+nature of concurrent programs.
+The semantics for locks is fundamental for concurrent
+programs; in fact without such semantics the implementation
+of basic concurrent structures (i.e.~mutual exclusion patterns)
+is impossible.
+
+The semantics for locks can be easily encoded in
+message passing semantics. The purpose of this
+usecase is to demonstrate a message passing encoding
+of a lock which is session typed. This is to
+identify the session type that specifies this
+fundamental concurrency structure.
+
+A session type description of a lock will further
+ensure the correctness of different mutual exclusion algorithms.
+
+\newcommand{\lock}{\ensuremath{\mathsf{lock}}\xspace}
+\newcommand{\unlock}{\ensuremath{\mathsf{unlock}}\xspace}
+
+\subsection{Lock Semantics}
+
+We informally describe the semantics of a lock structure.
+
+\begin{itemize}
+	\item	A lock may be abstracted as a state machine.
+
+	\item	The initial state is the {\em unclocked} state.
+
+	\item	Any process registered to the lock may interact with the
+			lock via messages \lock and \unlock.
+
+	\item	A process $A$ may send the message \lock and interact with a lock in the unlock state.
+			The result of the interaction will force the lock to transition to state {\em lock $A$}.
+
+	\item	At a lock $A$ state a lock may only interact with an \unlock message from process $A$
+			to transit back to the unlock state.
+
+	\item	
+\end{itemize}
+
+\subsection{Session Types}
+
+The main challenge regarding a lock implementation
+in session types, is the fact that any process may
+interact with the process at the same time, creating 
+a race condition.
+
+Standard binary session types and multiparty session types
+do not support race conditions. The description of
+protocols in session types assume deterministic interaction
+between roles. If we were to allow race conditions to standard
+session types we would lose vital progress properties, since
+roles that {\em lose the race} would remain deadlocked, e.g.:
+
+\newcommand{\val}[2]{\ensuremath{#1 \rightarrow #2;} }
+\newcommand{\tinact}{\ensuremath{\mathbf{end}}}
+\newcommand{\tout}[1]{\ensuremath{[#1]!;}}
+\newcommand{\tinp}[1]{\ensuremath{[#1]?;}}
+
+If we use a non-deterministic protocol ($+$ is non-deterministic internal choice)
+to describe a lock:
+\[
+	\val{A}{L}; \tinact + \val{B}{L} \tinact
+\]
+we can see that in the local projection semantics:
+\begin{eqnarray*}
+	&A:& \tout{L} \tinact\\
+	&B:& \tout{L} \tinact\\
+	&L:& \tinp{A} \tinact + \tinp{B} \tinact
+\end{eqnarray*}
+Either role $A$ or role $B$ will remain at a deadlock state
+if the other role interacts with the lock.
+
+
+To overcome such problems Kouzapas et.~al.~\cite{citation_needed}
+developed a binary session type system that supports asynchronous
+semantics and runtime message and type inspection able to describe
+reactive communication patterns such as the above. The theory
+was implemented the Eventful Session Java (ESJ) framework
+by Hu et.~al.~\cite{citation_needed}.
+We use the theory for eventful session types and the ESJ framework
+to implement the requirements of this usecase.

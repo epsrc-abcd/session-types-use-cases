@@ -1,0 +1,53 @@
+\newcommand{\In}{\ensuremath{\mathtt{in}\ }}
+\newcommand{\Register}{\ensuremath{\mathtt{register}\ }}
+\newcommand{\Select}{\ensuremath{\mathtt{select}\ }}
+\newcommand{\To}{\ensuremath{\mathtt{to}\ }}
+\newcommand{\From}{\ensuremath{\mathtt{from}\ }}
+\newcommand{\New}{\ensuremath{\mathtt{new}\ }}
+\newcommand{\Selector}{\ensuremath{\mathtt{selector}\ }}
+
+\newcommand{\newsel}[2]{\New \Selector[#1]\ #2\ \In}
+\newcommand{\register}[2]{\Register #1\ \From\ #2\ \In}
+\newcommand{\select}[2]{\Select #1\ \From\ #2\ \In}
+
+\newcommand{\shqueue}[2]{#1[#2]}
+
+\newcommand{\es}{\ensuremath{\epsilon}}
+
+\newcommand{\Lock}{\ensuremath{\mathbf{Lock}}}
+
+\newcommand{\out}[2]{\ensuremath{#1!\langle #2 \rangle;}}
+\newcommand{\inp}[2]{\ensuremath{#1?(#2);}}
+\newcommand{\Par}{|}
+
+
+\section{Session type Implementation}
+\label{sec:scribble}
+
+We use the selector construct~\cite{citation_needed}
+to describe a lock process that registers two processes that
+want to acquire the lock.
+
+\begin{eqnarray*}
+	\Lock &=& \newsel{S}{r} \inp{a}{x} \\
+	& & \register{x}{r} \inp{a}{y} \\
+	& & \register{y}{r} \\
+	& & \mu X. \inp{x}{z} \inp{x}{w} X
+\end{eqnarray*}
+
+with
+\[
+  S = \mu X. !\langle \lock \rangle; ?(\unlock); X
+\]
+
+
+We then define processes $A$ and $B$ that interact with the lock 
+\begin{eqnarray*}
+	A &=& \out{a}{s_1} \out{s_1}{\lock} \dots \mathsf{critical\ section} \dots \out{s_1}{\unlock} \\
+	B &=& \out{a}{s_2} \out{s_2}{\lock} \dots \mathsf{critical\ section} \dots \out{s_2}{\unlock} \\
+\end{eqnarray*}
+
+The whole system would be
+\[
+	\Lock \Par A \Par B \Par \shqueue{a}{\es}
+\]
