@@ -7,3 +7,6 @@
 [submodule "DNSServer/erlang-dns"]
   path = DNSServer/erlang-dns
   url = https://github.com/SimonJF/erlang-dns.git
+[submodule "ChatServer/mse-chat"]
+	path = ChatServer/mse-chat
+	url = https://github.com/SimonJF/mse-chat
