@@ -1,0 +1,45 @@
+\usepackage{listings}
+\usepackage{upquote}
+\usepackage{color}
+
+\definecolor{bluekeywords}{rgb}{0.13,0.13,1}
+\definecolor{greencomments}{rgb}{0,0.5,0}
+\definecolor{turqusnumbers}{rgb}{0.17,0.57,0.69}
+\definecolor{redstrings}{rgb}{0.5,0,0}
+
+\lstdefinelanguage{Scribble}{
+  morekeywords={
+  	global, protocol, role, from, to, interruptible, with, do, instantiates, par, and, rec, continue, choice, at, initiates, handle, returning, call, local, or
+  },
+  otherkeywords={ },
+  keywordstyle=\color{bluekeywords},
+  sensitive=true,
+  %basicstyle=\scriptsize\ttfamily,
+  basicstyle=\linespread{0.9}\ttfamily,
+	breaklines=true,
+  xleftmargin=\parindent,
+  belowskip=\bigskipamount,
+  aboveskip=\bigskipamount,
+  tabsize=4,
+  morecomment=[l][\color{greencomments}]{///},
+  morecomment=[l][\color{greencomments}]{//},
+  morecomment=[s][\color{greencomments}]{{(*}{*)}},
+  morestring=[b]",
+  showstringspaces=false,
+  literate={`}{\`}1,
+  frame=none,
+  showlines=false,
+  frame=single,
+  stringstyle=\color{redstrings},
+}
+
+\lstset{
+  language=Scribble,
+  showstringspaces=false,
+  formfeed=\newpage,
+  tabsize=2,
+  commentstyle=\itshape,
+  basicstyle=\linespread{0.9}\ttfamily,
+  %captionpos=b,
+  %belowcaptionskip=4pt,
+}
