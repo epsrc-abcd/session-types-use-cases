@@ -1,88 +1,30 @@
-\section{State Machine}
+% !TEX root = smtp_main.tex
+\section{State Machine for SMTP Client}
 
-\begin{statemachine}[node distance=7cm]
+\begin{statemachine}[node distance=8cm]
 	\node[initial,state]		(S0)								{\lstinline|State0|};
-	\node[state]				(S1)[right of=S0]					{\lstinline|State1|};
-	\node[state]				(S2)[below =2cm of S1]				{\lstinline|State2|};
+	\node[state]				(S1)[right of=S0]				{\lstinline|State1|};
+	\node[state]				(S2)[below =2cm of S1]			{\lstinline|State2|};
 	\node[state]				(S3)[left of=S2]					{\lstinline|State3|};
-	\node[state]				(Ch)[below =2cm of S3]				{\lstinline|Choice|};
-	\node[state]				(S4)[right of= Ch]					{\lstinline|State4|};
-	\node[state,accepting]		(END)[below =2cm of Ch]				{\lstinline|END|};
+	\node[state]				(S29)[below = 2cm of S3]			{\lstinline|State29|};
+	\node[state]				(S30)[right = 4cm of S29]			{\lstinline|State30|};
+	\node[state]				(S31)[below = 2cm of S29]		{\lstinline|State31|};
+	\node[state]				(S32)[left = 3cm of S29]			{\lstinline|State32|};
+	\node[state]				(S39)[right = 9cm of S31]			{\lstinline|State39|};
+	\node[state,accepting]		(END)[below =2cm of S39]		{\lstinline|END|};
+	\node[state]				(SX)[below = 2cm of S31]			{\lstinline|Other States|};
 
-	\path	(S0)	edge	node		{\lstinline|void send_bookToSeller(Title)|}				(S1)
-			(S1)	edge	node[left]	{\lstinline|Price receive_bookFromSeller()|}			(S2)
-			(S2)	edge	node		{\lstinline|void send_quoteToBuyer2(Contribution)|}		(S3)
-			(S3)	edge	node		{\lstinline|Choice receive_ChoiceFromBuyer2()|}			(Ch)
-			(Ch)	edge	node		{\lstinline|AGREE|}										(S4)
-					edge	node		{\lstinline|QUIT|}										(END)
-			(S4)	edge	node		{\lstinline|void send_transferToSeller(Money)|}			(END);
+	\path	(S0)		edgenode		{\lstinline|String receive_220StringFromS()|}	(S1)
+		(S1)		edgenode[left]	{\lstinline|void send_EHLOToS()|}	(S2)
+				edgenode[left]		{\lstinline|void send_QUITToS()|}	(S39)
+		(S2)		edgenode		{\lstinline|void send_ehloStringToS(String)|}	(S3)
+		(S3)		edgenode		{\lstinline|...|}	(S29)
+		(S29)	edgenode 	{\lstinline|void send_SUBJECTToS()|}	(S30)
+				edgenode		{\lstinline|void send_DATALINEToS()|}	(S31)
+				edgenode		{\lstinline|void send_ATADToS()|}	(S32)
+		(S32)	edgenode		{\lstinline|...|}	(SX)
+		(S31)	edgenode		{\lstinline|...|}	(SX)
+		(S30)	edgenode		{\lstinline|...|}	(SX)
+		(S39)	edgenode[left]	{\lstinline|void send_quitStringToS(String)|}	(END);
 \end{statemachine}
-
-
-\begin{statemachine}[node distance=7.5cm]
-	\node[initial,state]		(S0)								{\lstinline|State0|};
-	\node[state]				(S1)[right of=S0]					{\lstinline|State1|};
-	\node[state]				(S2)[below =2cm of S1]				{\lstinline|State2|};
-	\node[state]				(S3)[below =2cm of S2]				{\lstinline|State3|};
-	\node[state]				(S4)[below =2cm of S0]			{\lstinline|State4|};
-	\node[state,accepting]		(END)[below =2cm of S4]				{\lstinline|END|};
-
-	\path	(S0)	edge	node		{\lstinline|void receive_quoteFromSeller(Contribution)|}	(S1)
-			(S1)	edge	node		{\lstinline|void send_AGREEToBuyer1()|}						(S2)
-					edge	node[left]	{\lstinline|void send_QUITToBuyer1()|}						(S4)
-			(S2)	edge	node		{\lstinline|void send_AGREEToSeller()|}						(S3)
-			(S3)	edge	node		{\lstinline|void send_transferToSeller(Money)|}				(END)
-			(S4)	edge	node		{\lstinline|void send_QUITToSeller()|}						(END);
-\end{statemachine}
-
-\begin{statemachine}[node distance=7cm]
-	\node[initial,state]		(S0)								{\lstinline|State0|};
-	\node[state]				(S1)[right of=S0]					{\lstinline|State1|};
-	\node[state]				(S2)[below =2cm of S1]				{\lstinline|State2|};
-	\node[state]				(Ch)[left of=S2]				{\lstinline|Choice|};
-	\node[state]				(S3)[below =4cm of Ch]					{\lstinline|State3|};
-
-	\node[state]				(S4)[right of= S3]					{\lstinline|State4|};
-	\node[state,accepting]		(END)[below =2cm of S2]				{\lstinline|END|};
-
-	\path	(S0)	edge	node		{\lstinline|Title receive_bookFromBuyer1()|}			(S1)
-			(S1)	edge	node[left]	{\lstinline|void send_bookToBuyer1(Price)|}				(S2)
-			(S2)	edge	node		{\lstinline|Choice receive_ChoiceFromBuyer2()|}			(Ch)
-			(Ch)	edge	node		{\lstinline|AGREE|}										(S3)
-					edge	node		{\lstinline|QUIT|}										(END)
-
-			
-			(S3)	edge	node		{\lstinline|void receive_transferFromBuyer1(Money)|}	(S4)
-			(S4)	edge	node		{\lstinline|void receive_transferFromBuyer2(Money)|}	(END);
-\end{statemachine}
-
-
-\begin{comment}
-\begin{statemachine}
-	\node[initial,state]		(S0)								{\lstinline|State0|};
-	\node[state]				(S1)	[above right=2.5cm of S0]	{\lstinline|State1|};
-	\node[state]				(S2)	[below right=2.5cm of S1]	{\lstinline|State2|};
-	\node[state,accepting]		(END)	[below of=S0]				{\lstinline|End|};
-
-
-	\path	(S0)	edge			node 		{\lstinline|void send_fibonacciToB()|}	(S1)
-					edge			node[left]	{\lstinline|void send_endToB()|}		(END)
-			(S1)	edge			node		{\lstinline|void send_longToB()|}		(S2)
-			(S2)	edge			node		{\lstinline|void receive_longFromB()|}	(S0);
-\end{statemachine}
-
-\begin{statemachine}
-	\node[initial,state]		(S0)								{\lstinline|State0|};
-	\node[state]				(Ch)	[right=5cm of S0]				{\lstinline|Choice|};
-	\node[state]				(S1)	[above of=Ch]				{\lstinline|State1|};
-	\node[state]				(S2)	[above of=S0]				{\lstinline|State2|};
-	\node[state,accepting]		(END)	[below of=Ch]				{\lstinline|End|};
-
-
-	\path	(S0)	edge			node[below]		{\lstinline|void send_ChoiceToB()|}		(Ch)
-			(Ch)	edge			node[right] 	{\lstinline|FIBONNACCI|}				(S1)
-					edge			node[right]		{\lstinline|END|}						(END)
-			(S1)	edge			node[above]		{\lstinline|void receive_longFromA()|}	(S2)
-			(S2)	edge			node[left]		{\lstinline|void send_longToA()|}		(S0);
-\end{statemachine}
-\end{comment}
+%%
