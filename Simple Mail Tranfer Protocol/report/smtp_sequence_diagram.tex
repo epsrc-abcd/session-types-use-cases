@@ -7,15 +7,29 @@
 	\mythread[2]{S}{\Server}
 
 	\mymess[near start]{S}{\code{\_220(String)}}{Intermediate}
-	\mymess[near start]{Intermediate}{\code{220: text}}{C}
+	\mymess[near start]{Intermediate}{\code{220:text}}{C}
 	
 	\begin{sdblock}{Choice}{At \Client}
 		\mymess{C}{\code{ehlo(String)}}{Intermediate}
-		\mymess{Intermediate}{\code{EHLO: text}}{S}
+		\mymess{Intermediate}{\code{EHLO:text}}{S}
+		\mymess{C}{\code{...}}{Intermediate}
+		\mymess{Intermediate}{\code{...}}{S}
 		
 		\begin{sdblock}{Loop}{Rec Z1}
 			\mymess{C}{\code{data(String)}}{Intermediate}
-			\mymess{Intermediate}{\code{DATA: text}}{S}
+			\mymess{Intermediate}{\code{DATA:text}}{S}
+			\mymess{C}{\code{...}}{Intermediate}
+			\mymess{Intermediate}{\code{...}}{S}
+			\begin{sdblock}{Choice}{At \Client}
+				\mymess{C}{\code{subject(String)}}{Intermediate}
+				\mymess{Intermediate}{\code{SUBJECT:text}}{S}
+				\separateline{C}{S}
+				\mymess{C}{\code{dataline(String)}}{Intermediate}
+				\mymess{Intermediate}{\code{DATALINE:text}}{S}
+				\separateline{C}{S}
+				\mymess{C}{\code{atad(String)}}{Intermediate}
+				\mymess{Intermediate}{\code{ATAD:text}}{S}
+			\end{sdblock}
 		\end{sdblock}
 
 
