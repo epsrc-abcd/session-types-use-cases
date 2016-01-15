@@ -1,0 +1,238 @@
+\section{Features}
+
+This usecase intends to demonstrate how patterns of
+computation that consist of a loop with sequential
+dependency, i.e.~each iteration is dependent on the
+previous iteration, can be expressed as a set of 
+concurrent computations. The interaction between 
+parallel components can be expressed using session types.
+
+
+To clarify the above motivation, consider the following general pattern
+sequential code:
+%
+\begin{lstlisting}
+  int x = init();
+  for(int i = 0; i < N; i++) {
+    x = compute(x);
+    resourceConsumingFun(x);
+  }
+\end{lstlisting}
+%
+Each iteration of the above loop is dependent on
+the previous iteration to produce data \lstinline|x|.
+It then uses the produced data \lstinline|x| to perform
+a resource consuming computation which is assumed to
+be independent between iterations.
+
+Although the above algorithm is inherently sequential,
+it can be expressed as concurrent computation between
+two computation nodes. The code for the first node
+(Node A) is:
+%
+\begin{lstlisting}[caption={Code for Node A}]
+  int x = init();
+  for(int i = 0; i < N; i++) {
+    x = compute(x);
+    b.send(NEXT);
+    b.send(x);
+    resourceConsumingFun(x);
+    x = b.recv();
+  }
+  b.send(END);
+\end{lstlisting}
+%
+The code for the second node (Node B) is:
+%
+\begin{lstlisting}[caption={Code for Node B}]
+  loop: do{
+    switch(a.recv()) {
+      case NEXT:
+        x = a.recv();
+        x = compute(x);
+        resourceConsumingFun(x);
+        a.send(x);
+        continue loop;
+      case END:
+        break loop;
+    }
+  } while(true);
+\end{lstlisting}
+
+The above code splits the iterations of the loop across
+nodes A and B. The fact that each iteration is doing
+an independent time consuming operation may lead to
+an optimised concurrent implementation of the serial
+code due to the fact that different \lstinline|resourceConsumingFun(x)|
+function calls will be happening in parallel.
+
+The communication that takes place in the above scenario
+can be described using a multiparty session interaction
+between Nodes A and B:
+\begin{lstlisting}[caption={Global Protocol}]
+global protocol Conc(role A, role B) {
+  rec X {
+    choice at A {
+      NEXT(long) from A to B;
+      NEXT(long) from B to A;
+      continue X;
+    } or {
+      END() from A to B;
+    }
+  }
+}
+\end{lstlisting}
+%
+The motivation for developing such an algorithm is:
+i) exploit any parallelism that may exist between
+sequentially dependent iterations of an algorithm; and
+ii) use session types to show that the interaction
+patterns of such transformations can be expressed in
+a structure and descriptive way, that follows all the
+properties proposed by session types. 
+
+An instance of the above problem, without the time consuming
+computation, is the classic Fibonacci algorithm, where each
+iteration for computing a Fibonacci number is dependent
+on the previous two iterations of the algorithm.
+
+
+
+\begin{comment}
+Consider the following general pattern of serial code:
+%
+\begin{lstlisting}
+  data x = init();
+  for(int i = 0; i < n; i++) {
+    x = f(x);
+    process(x);
+  }
+\end{lstlisting}
+%
+The above code describes the typical case where a loop
+computes a value \lstinline|x| based on the value
+\lstinline|x| computed in the previous iteration.
+It further calls a general method \lstinline|process(data x)|
+to process the computed value.
+
+The serial Fibonacci algorithm is an instance of the above
+pattern.
+%
+\begin{lstlisting}
+  int x = 0;
+  int y = 1;
+  for(int i = 0; i < n; i++) {
+    int z = x;
+    y += x;
+    x = z;
+  }
+\end{lstlisting}
+%
+By observing the above serial Fibonacci algorithm and
+the concurrent Fibonacci algorithm and by assuming
+that \lstinline|process(data x)| is not dependent on shared resources,
+we can generalise a two node concurrent implementation of the
+former general programming pattern as:
+%
+\begin{lstlisting}[caption={Code for Node A}]
+  data x = init();
+  for(int i = 0; i < n; i++) {
+    b.send(Choice.NEXT);
+    b.send(x);
+    process(x);
+    x = a.recv();
+    if(i++ < n)
+      x = f(x);
+  }
+    b.send(Choice.END);
+\end{lstlisting}
+%
+and
+%
+%
+\begin{lstlisting}[caption={Code for Node B}]
+  data x = init();
+  loop: do {
+    switch(a.recv()) {
+      case Choice.NEXT:
+        x = a.recv();
+        x = foo(x);
+        a.send(x);
+        process(x);
+        continue loop;
+      case Choice.END:
+        break loop;
+    }
+  } while(true);
+\end{lstlisting}
+
+The global type of the above protocol is the same as
+the protocol for the concurrent Fibonacci algorithm,
+up-to the type of the carried data.
+
+The generalisation gives evidence that session types
+can be used to describe the parallelisation structure
+of patterns of serial code. This structure is expressed
+by means of communication interaction.
+
+Someone might argue that, because of the serial dependency
+nature of the serial algorithm there is a reduced speed-up
+in the parallelised code, due to the fact that we are using
+more resources. However, if method \lstinline|process(data x)|
+is resource demanding enough we can manage to obtain the analogous
+speed-up.
+\end{comment}
+
+
+\begin{comment}
+In this section we develop an informal correspondence
+between the concurrent Fibonacci code and other
+sequential implementations of the Fibonacci algorithm.
+Considered the following recursive code:
+%
+\begin{lstlisting}
+  int fibonacci(int n, int x, int y) {
+    if(n <= 1)
+      return x;
+    return fibonacci(n - 1, x + y, x);
+  }
+
+  int fibonacci(int n) {
+    return fibonacci(n, 1, 0)
+  }
+\end{lstlisting}
+%
+The call for computing the kth Fibonacci number
+would be \lstinline|fibonacci(k);|.
+We can understand the concurrent implementation,
+if we consider communications taking place instead
+of recursive calls and returns.
+%This procedure
+%gives rise to the 
+The concurrent code has also the ability
+to maintain a state closure that will be used
+on a later interaction.
+
+A serial procedure for computing Fibonacci
+is implemented by the following code:
+%
+\begin{lstlisting}
+  int x = 0;
+  int y = 1;
+  for(int i = 0; i < n; i++) {
+    int z = x;
+    y += x;
+    x = z;
+  }
+\end{lstlisting}
+%
+Each iteration of the above code corresponds to
+a recursive Fibonacci call.
+The above code can be generalised to a pattern
+of the form
+\begin{lstlisting}
+  for(int i; i < n; i++) {
+    x = f(x);
+  }
+\end{lstlisting}
+\end{comment}
